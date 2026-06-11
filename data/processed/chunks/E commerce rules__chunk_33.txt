@@ -1,0 +1,9 @@
+exemption from liability under sub-section (1) of section 79 of the Information Technology Act, 2000 (21 of 2000) 
+shall comply with sub-sections (2) and (3) of  that section, including the provisions of the Information Technology 
+(Intermediary Guidelines) Rules, 2011. 
+(2)  Every marketplace e-commerce entity shall require sellers through an undertaking to ensure that descriptions, 
+images, and other content pertaining to goods or services on their platform is accurate and corresponds directly 
+with the appearance, nature, quality, purpose and other general features of such good or service.  
+(3)  Every marketplace e-commerce entity shall provide the following information in a clear and accessible manner, 
+displayed prominently to its users at the appropriate place on its platform: 
+(a)  details about the sellers offering goods and services, including the name of their business, whether registered

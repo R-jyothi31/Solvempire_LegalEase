@@ -1,0 +1,21 @@
+POWER OF ATTORNEY
+Date: [DATE]
+Place: [CITY, STATE]
+BETWEEN:
+1. [FULL NAME OF PRINCIPAL], aged [AGE] years, residing at [ADDRESS] (hereinafter referred to as
+the 'Principal')
+2. [FULL NAME OF ATTORNEY], aged [AGE] years, residing at [ADDRESS] (hereinafter referred to as
+the 'Attorney')
+WHEREAS:
+The Principal desires to appoint the Attorney to act on their behalf for the purposes described herein.
+NOW, THEREFORE, the parties agree as follows:
+1. GRANT OF POWER
+The Principal hereby appoints the Attorney as their true and lawful attorney to act on their behalf for the
+following purposes: [LIST SPECIFIC POWERS].
+2. SCOPE OF AUTHORITY
+The Attorney shall have the authority to: (a) [SPECIFIC POWER 1]; (b) [SPECIFIC POWER 2]; (c)
+[SPECIFIC POWER 3].
+3. LIMITATIONS
+The Attorney shall NOT have the authority to: [LIST SPECIFIC LIMITATIONS]. Any action beyond the
+scope of this Power of Attorney shall be void.
+4. DURATION

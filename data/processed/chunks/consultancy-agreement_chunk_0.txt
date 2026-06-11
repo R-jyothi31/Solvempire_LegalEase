@@ -1,0 +1,21 @@
+CONSULTANCY AGREEMENT
+Date: [DATE]
+Place: [CITY, STATE]
+BETWEEN:
+1. [CLIENT NAME / COMPANY NAME], having its office at [ADDRESS] (hereinafter referred to as the
+'Client')
+2. [CONSULTANT NAME], having its office at [ADDRESS] (hereinafter referred to as the 'Consultant')
+WHEREAS:
+The Client requires consultancy services and the Consultant has agreed to provide the same on the terms set out
+herein.
+NOW, THEREFORE, the parties agree as follows:
+1. SCOPE OF CONSULTANCY
+The Consultant shall provide the following advisory and consultancy services: [DESCRIBE SERVICES].
+2. TERM
+This Agreement shall be effective from [START DATE] for a period of [DURATION].
+3. FEES
+The Client shall pay a consultancy fee of Rs. [AMOUNT]/- [per month/per project/per milestone]. TDS at
+10% shall be deducted under Section 194J of the Income Tax Act.
+4. DELIVERABLES
+[LIST SPECIFIC DELIVERABLES AND TIMELINES].
+5. INDEPENDENT CONTRACTOR

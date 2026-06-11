@@ -1,0 +1,25 @@
+AFFIDAVIT
+Date: [DATE]
+Place: [CITY, STATE]
+BETWEEN:
+1. [FULL NAME], aged [AGE] years, [SON/DAUGHTER/WIFE] of [FATHER'S/HUSBAND'S NAME],
+residing at [COMPLETE ADDRESS] (hereinafter referred to as the 'Deponent')
+I, [FULL NAME], the above-named Deponent, do hereby solemnly affirm and state on oath as follows:
+1.
+That I am [NATIONALITY] citizen and a permanent resident of [ADDRESS].
+2.
+That [STATE THE FACTS - PARAGRAPH 1].
+3.
+That [STATE THE FACTS - PARAGRAPH 2].
+4.
+That [STATE THE FACTS - PARAGRAPH 3].
+5.
+That [STATE ANY ADDITIONAL FACTS AS REQUIRED].
+VERIFICATION
+I, the above-named Deponent, do hereby verify and confirm that the contents of this Affidavit are true and
+correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
+IN WITNESS WHEREOF, the parties have executed this agreement on the date first written above.
+_______________________________
+Signature of Deponent
+Name: [FULL NAME]
+Date: [DATE]

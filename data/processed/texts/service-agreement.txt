@@ -1,0 +1,388 @@
+GENERAL SERVICE AGREEMENT
+_______________________________
+            This Service Agreement (the "Agreement") is made and entered into as of , (the "Effective Date"),
+by and between (the "Company" or "Client"), . ')?>RECIPIENT_REPRESENTATIVE_NAME')?> located
+at , , and , . located at , , (the "Service Provider").
+           
+WHEREAS, the Company is engaged in the business of , and thus providing ;
+ 
+            WHEREAS, the Service Provider independently engaged in the business of , and thus providing .
+ 
+            
+WHEREAS, the Company desires to hire the Service Provider to perform those services as
+described herein this Service Agreement, and as such, the Service Provider does herein desire to provide
+such services in accordance with the terms and conditions of this Agreement.
+ 
+            NOW THEREFORE, in consideration of the mutual promises established and set forth herein, the
+Company and Service Provider hereby acknowledge and agree as follows:
+ 
+SERVICE PROVIDER DUTIES & RESPONSIBILITIES
+ 
+Services:
+It shall be agreed upon, that during the term of this Agreement the Service Provider shall provide the
+services ("Services") that are described within the attached Schedule 1 (the "Schedules") and on any such
+additional consecutively numbered supplementary schedules, as which may be executed at any time by both
+parties to this Agreement. Each attached, or subsequently attached Schedule shall contain a description of
+the deliverables required to be provided by the Service Provider (collectively "Deliverables"), a description
+of any completion deadlines that pertain to the Deliverables and a description of the corresponding payment
+terms, including any partial payments for completion of designated milestones comprising each
+Deliverable.
+ 
+Service Provider's Control Over Services Provided:
+The Service Provider shall retain the unqualified right of control over the means, manner and methods by
+which their Services are rendered and performed, and the right to perform those Services at the location(s)
+and time(s) that the Service Provider independently determines and sets forth. The Service Provider shall be
+responsible for providing all equipment, materials and supplies that the Service Provider determines shall
+be required to timely provide those Services which have been requested by the Service Recipient.
+ 
+Compliance with Applicable Law:
+The Service Provider shall be responsible for complying with any and all applicable federal, state and local
+laws, rules, ordinances, regulations, and/or codes that pertain to the performance of the Services requested
+and provided. The Service Provider's failure to comply with the responsibilities and duties described in this
+Paragraph shall constitute a material breach of the Agreement.
+ 
+Insurance:
+The Service Provider agrees to secure and maintain, at the Service Providers sole cost and expense,
+Worker's Compensation Coverage where required by law and General Liability Insurance, as required by
+the Company.
+ 
+Permits and Licenses:
+The Service Provider shall be responsible for acquiring and maintaining, during the term of this Agreement,
+any and all permits, licenses and authorizations, if applicable, required to conduct the Service Provider's
+business and to perform the Services requested. The Service Provider's failure to comply with the
+responsibilities and duties herein described in the Paragraph shall constitute a material breach of this
+Agreement.
+ 
+Taxes:
+The Service Provider shall be solely responsible for filing all tax returns, tax declarations and tax
+schedules, and for the payment of all taxes required when due, with respect to any and all compensation
+earned by the Service Provider as set forth in accordance to this Agreement. The Service Provider's failure
+to comply with the duties described herein this Paragraph shall constitute a material breach of this
+Agreement.
+ 
+Worker's Compensation Insurance:
+The Service Provider shall comply with the applicable worker's compensations laws with respect to Service
+Provider and Service Provider's personnel, and shall provide to the Company a certificate verifying
+worker's compensation insurance coverage upon request from the Company. The Service Provider's failure
+to comply with the duties herein described in this Paragraph shall constitute a material breach of this
+Agreement.
+ 
+DUTIES IMPOSED ON THE COMPANY
+ 
+Fees:
+The Service Provider's entire compensation for the performance of the Services provided hereunder shall be
+set forth in specific detail contained within the Schedule that corresponds to the specific Services provided
+and shall be payable solely by the Company. As a material term of the compensation arrangement agreed to
+by these parties, the Service Provider agrees that the fees described in the Schedule represents the entire
+compensation to which the Service Provider shall be entitled for performing the corresponding Services,
+and that the Service Provider is not eligible for any additional compensation in the form of cash or in the
+form of employee benefits under any plans or programs maintained by the Company or its clients,
+including, but not limited to, any bonus, paid time off, health, pension and incentive compensation
+(collectively, "Benefit Plans"). If for any reason the Service Provider is deemed to be a common-law
+employee of the Company by any governmental agency, court or other entity, the Service Provider hereby
+waives any right to, and agrees to neither seek nor accept any benefits under the Benefit Plans, even if the
+terms thereof the Service Provider would be eligible to receive such benefits.
+ 
+Form 1099 Compliance:
+The Company shall report the amounts it pays the Service Provider on IRS Form 1099, to the extent so
+required under the Internal Revenue Code.
+ 
+No Reimbursements:
+The Service Provider shall not be entitled to any reimbursement by the Company for any cost or expenses
+outside of what has been originally agreed upon for compensation to the Service Provider from the
+Company and set forth in the herein attached Schedule.
+ 
+INDEPENDENT CONTRACTOR RELATIONSHIP
+ 
+For all intent and purposes, including, but not limited to the Federal Insurance Contributions Act ("FICA").
+The Self Employment Contributions Act ("SECA"), the Social Security Act, the Federal Unemployment
+Tax Act ("FUTA"), the Internal Revenue Code and any and all other federal, state and local laws, rules and
+regulations, each party hereto, including its officers, agents and employees, shall be at all times an
+independent contractor relative to the other party. Nothing in this Agreement shall be construed to make or
+render either party, including any of its officers, agents or employees, an agent, servant or employee of, or a
+joint venture of or with the other.
+ 
+OWNERSHIP AND ASSIGNMENT OF WORK PRODUCT
+ 
+The Service Provider does herein agree that any and all Work Product will be the exclusive property of the
+Company, and in consideration of this Agreement, without further compensation, hereby assigns, and (as
+necessary) agrees to assign, to the Company all right, title, and interest to all Work Product that:
+ 
+(a) relates to:
+(i)      
+all or any aspect of the Company's actual or anticipated business, research, and
+development or existing or future products or services, or
+ 
+(ii)     an actual or demonstrably anticipated research or development project of the Company;
+(b) is conceived, created, and reduced to practice, developed, or made entirely or in any part:
+ 
+(i)             
+during which time services are provided or on Company time, or using any
+equipment, supplies, facilities, assets, materials, information (including, without
+limitation, Confidential Information) or resources of any of the Company's
+(including, without limitation, any intellectual property rights); or
+ 
+(c) results from any work performed by the Service Provider for the Company. Any creative works,
+discoveries, designs, software, computer programs, inventions, improvements, modifications,
+enhancements, know-how,  product, formula or formulation, concept or idea that the Service
+Provider has within one year following the cessation or termination of the Service Provider with
+the Company shall be deemed to be Work Product owned by the Company under this Section,
+unless otherwise proven by the Service Provider to have been outside each of the criteria
+specified above in this Section.
+ 
+CONFIDENTIALITY- UNAUTHORIZED DISCLOSURE
+ 
+Within or after the services period, the Service Provider shall at no time divulge, release, or remove for
+his/her use or that of any other individual or company, any documentation, information, or knowledge
+pertaining to the operation or business of the Company or any of its subsidiaries or affiliates, obtained or
+made available to him/her during the course of their employment with the company, subsidiaries or
+affiliates. Furthermore, the Company and the Service Provider agree as follows:
+ 
+(a)   Confidential Information shall include, but is not limited to, all non-public information, written
+or oral, whether disclosed directly or indirectly, through any means of communication or
+observation by the Service Recipient or any of its affiliates or representatives to or for the
+benefit of the Service Provider.
+ 
+(b)  Confidential information excludes that which is public knowledge.
+ 
+(c)   Employee shall not copy or modify any Confidential Information without prior written consent
+of the Company.
+ 
+(d)  The Service Provider shall, upon termination of this Agreement, (whether voluntary or
+involuntarily), or upon request of the Service Recipient, immediately return to the Company any
+and all property in their possession or that which may be under their control or care, including
+but not limited any proprietary information, customer names and lists, trade secrets, intellectual
+property, written documents, plans, recordings, software, accounting or financial information
+and/or any other materials of a confidential nature.
+ 
+Unauthorized Disclosure:
+Should the Service Provider, during, or after termination of employment, disclose or threaten to disclose
+any information of a confidential nature, the Service Provider shall be deemed in violation of this
+agreement, and the Company at that time shall be entitled to obtain an injunction to restrain the Service
+Provider from disclosing or further disclosing, in whole or in part, Confidential Information. The Company
+shall also be entitled to pursue other legal remedies, as may be deemed appropriate, for any loss and/or
+damages incurred as a result of any unauthorized disclosure made by the Service Provider during or after
+termination of their services.
+ 
+TERMS AND TERMINATION
+ 
+The terms of the herein contained Agreement shall commence on the previously established effective date
+and shall continue as such in full effect and force thereafter until such time as the deliverables are
+completed as required of the Service Provider in accordance to an outstanding Schedule. Any Schedule
+given or provided to the Service Provider shall remain within an outstanding status until such time as the
+Deliverable specified therein has been completed or this Agreement has otherwise been terminated.
+ 
+Breach Cause for Termination:
+This Agreement may be terminated at any time by either party should a material breach by the other party
+remain uncured thirty (30) days after submission of written notice being provided of the breach thereof, or a
+shorter period of time as may be specified within this Agreement or within the applicable Schedule
+provided to the Service Provider by the Company.
+ 
+Return of Company Property:
+At the end of the Service Providers contract or upon termination of their services, whether voluntary or
+involuntary, said Service Provider shall immediately return to the Company any and all company property
+including, but not limited to, the following:
+ 
+(a)   Key or Key Card(s) granting access to the building and/or offices or area's located within the
+building;
+ 
+(b)  Company Car (if applicable);
+ 
+(c)   Company Identification (ID);
+ 
+(d)  Computer (if applicable);
+ 
+(e)   Business Cards (if applicable);
+ 
+(f)   Company Credit Cards (if applicable); and any
+ 
+(g)   Company related documents and/or material.
+ 
+The Company reserves the right, and shall be entitled to pursue any legal remedies, as may be deemed
+appropriate, for any loss and/or damages incurred as a result of the Service Providers failure to return
+Company property after termination of their services.
+ 
+INDEMNIFICATION
+ 
+Both parties shall guarantee, guard against and hold harmless the other party, any current or former
+employees, shareholders, partners or any ownership interest and agents from and/or against any alleged
+claim, including, but not limited to third-party claims, demands, loss, damages and or expense, including
+any legal or attorney fees that may be in relation to:
+a)     any negligence, recklessness or any willful misconduct of the indemnifying party or any other
+party under the direction or control of the indemnifying party;
+ 
+b)    any material breach of this Agreement by the indemnifying party, or
+ 
+c)     any damage, loss or destruction relating to any property of the indemnifying party or their client
+or clients, injury or death to any individuals that may result from the actions or inactions of any
+employee, agent or subcontractor of the indemnifying party as such damage may arise out of or
+is in the course of fulfilling their obligations under and with relation to this Agreement, and to
+the extent that such damage may be due to any negligence, unlawful conduct, omission or
+default of the indemnifying party, their employees, agents or subcontractors.
+ 
+GENERAL
+ 
+Work Product:
+The Service Provider herein acknowledges and agrees that all work of authorship performed for the
+Client/Company shall be subject to the Client's/Company's direction and control and that such work
+constitute Work for Hire Work Product pursuant to United States Code Title 17 – Chapter 2 – Sections 201
+& 202 Ownership of Copyright & Material.
+ 
+Nonrestrictive Relationship:
+The herein named parties' relationship shall be considered nonrestrictive and the Service Provider shall
+have the right to perform services for others during the term of this Agreement that would include any
+services that may be similar to those which are or may be supplied by the Service Provider.
+ 
+Exempt:
+Neither party named herein, shall be held liable for or believed to be in breach of this Agreement by way of
+any delay, or failure to perform as necessitated by this Agreement as a consequence of any cause or
+condition that may be beyond either party's reasonable control and of which either party may be unable to
+overcome by the use or exercise of reasonable diligence.
+ 
+Notice:
+Both parties, when required, shall provide written notice or communication by:
+1)    personal delivery,
+ 
+2)    facsimile,
+ 
+3)    overnight carrier, or
+ 
+4)    a written notice mailed by certified mail, return receipt requested, provided that such
+notice is addressed to the parties at the addresses set forth below:
+ 
+(i)   Company:
+.
+,
+ 
+(ii) Service Provider:
+.
+,
+ 
+No Relinquishment:
+Any waiver or relinquishment for any breach of any term, condition or provision hereof and shall not be
+deemed to be a waiver of any other breach of the same or any other provision.
+ 
+Full and Complete Agreement:
+This Agreement has set forth the full and complete agreement and shall supersede any and all prior
+agreements between the parties concerning all aspects of the subject matter herein contained. The
+Agreement may not and shall not be amended except by way of a written instrument that must be signed by
+both parties named hereto.
+ 
+Delegation:
+The herein contained Agreement may not and shall not be assigned by the Service Provider without first
+providing prior written consent of the Company. The Company, however, may assign, delegate or make
+transfer of the Agreement to another entity that controls, is controlled by or that is under common control
+with, the Company now or in the future, or which may succeed to its business through a sale, merger or
+other corporate transactions. However, all rights and obligations shall be assumed by the assignee,
+transferee, or successor without modification.
+ 
+Formation, Severability, Endurance:
+In any event that any provision of this Agreement conflicts with the law pursuant to which this Agreement
+is to be construed or if any other provision is held to be invalid by a court within the jurisdiction over the
+parties to this Agreement, and
+ 
+(iii) that any such provision shall be deemed to be restated to reflect, as nearly as
+possible, the original intentions of the parties in accordance with applicable law, and
+ 
+(iv) in the remaining terms of this Agreement shall remain in full force and effect.
+ 
+All provisions of this Agreement, which by their nature should reasonably survive the termination of this
+Agreement, and shall survive the termination of this Agreement.
+ 
+Counterparts:
+This Agreement may be and shall be executed in counterparts, each of which shall be deemed an original
+and all of which together shall constitute one and the same document.
+ 
+ARBITRATION AND DISPUTE RESOLUTION
+ 
+The herein contained Agreement shall be governed by, construed and enforced pursuant with the laws of
+the State of , without giving any effect to any conflicts of law provisions. Any and all disputes between the
+Company, and including but not limited to its affiliates, shareholders, directors, officers, employees, agents,
+successors, attorneys and assigns, and the Service Provider, including their affiliates, shareholders,
+directors, officers, employees, agents, successors, attorneys and/or assigns, relating in any manner
+whatsoever to this Agreement ("Arbitral Claims"), and shall be resolved by and through the use of
+arbitration. Arbitration of such claims shall be done in accordance with the Commercial Arbitration Rules
+of the American Arbitration Association, as amended, and shall be conducted within the jurisdiction in
+which the company is located. The Federal Arbitration Act shall govern the interpretation and enforcement
+of this paragraph. The fees associated with the arbitrator shall be shared equally by both parties. The parties
+agree that this paragraph shall survive the termination of the Agreement.
+ 
+            IN WITNESS WHEREOF, the parties hereto, each acting pursuant with due and proper authority,
+have executed this Agreement as of the aforementioned Effective Date.
+ 
+OMPANY
+SERVICE PROVIDER
+y: ______________________________________
+ 
+ 
+ 
+By: _______________________________________
+ompany Name: 
+Provider Name: 
+rint Recipient Representative Name: .
+ 
+Print Provider Representative Name: .
+itle:
+Title:
+ate:
+Date:
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+DELIVERABLE SERVICES AGREEMENT SCHEDULE
+BY AND BETWEEN
+AND
+EFFECTIVE DATE OF
+ 
+ 
+Description of Services to be performed by Service Provider:
+           
+Provide
+ 
+Description of Deliverables to be produced by the Service Provider:
+           
+ 
+Payment term and methods:
+ 
+            Total Compensation:
+ 
+            Payment Terms:             
+ 
+            Payment Date:           
+ 
+            Payment Method: 
+ 
+Deadline for Deliverable Milestones:
+           
+by
+ 
+Any Additional Terms and Conditions:
+           
+ 
+ 
+ 
+OMPANY
+SERVICE PROVIDER
+y: ______________________________________
+ 
+ 
+ 
+By: _______________________________________
+ompany Name: 
+Provider Name: 
+rint Recipient Representative Name: .
+ 
+Print Provider Representative Name: .
+itle:
+Title:
+ate:
+Date:
+ 
+                                   

@@ -1,0 +1,23 @@
+employees understand their responsibilities and the potential consequences of disclosing 
+sensitive information. 
+ 
+A Non-Disclosure Agreement (NDA) policy should include: 
+ 
+● The definition of confidential information 
+● Handling of confidential information 
+● Disclosure rules 
+● Consequences for breach 
+ 
+ 
+How restrictive should my company NDA policy be? 
+ 
+The restrictions in your NDA policy should be reasonable and necessary to protect your 
+company's interests. It should clearly define what constitutes confidential information and 
+provide guidelines on how to handle such information. It should also outline the potential 
+disciplinary actions for breaches of the policy. 
+ 
+How do I distribute it? 
+ 
+Your NDA policy should be part of your employee handbook or live inside your policy database 
+(e.g., in your HRIS). Make sure all employees have read and signed it, especially those who 
+have access to sensitive information. Remember, this policy is a living document and should be
