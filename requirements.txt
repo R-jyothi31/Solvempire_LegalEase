@@ -6,3 +6,4 @@ sentence-transformers
 pymupdf
 streamlit
 python-dotenv
+langchain-openai
