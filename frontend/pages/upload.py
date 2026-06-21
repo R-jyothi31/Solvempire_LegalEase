@@ -1,36 +1,37 @@
 import streamlit as st
 import os
+import sys
 
-UPLOAD_FOLDER = "data/raw/uploads"
+FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if FRONTEND_DIR not in sys.path:
+    sys.path.append(FRONTEND_DIR)
 
-os.makedirs(
-    UPLOAD_FOLDER,
-    exist_ok=True
-)
+from utils import save_uploaded_file, analyze_uploaded_document
 
-st.title("📄 Upload Legal Document")
+st.title("Upload Legal Document")
 
 uploaded_file = st.file_uploader(
-    "Choose PDF",
+    "Upload a legal PDF file",
     type=["pdf"]
 )
 
-if uploaded_file:
+if uploaded_file is not None:
+    st.write("Selected File:", uploaded_file.name)
 
-    save_path = os.path.join(
-        UPLOAD_FOLDER,
-        uploaded_file.name
-    )
+    if st.button("Analyze Document"):
+        try:
+            with st.spinner("Analyzing document..."):
+                file_path = save_uploaded_file(uploaded_file)
+                result, raw_text = analyze_uploaded_document(file_path)
 
-    with open(save_path, "wb") as f:
-        f.write(
-            uploaded_file.getbuffer()
-        )
+                st.session_state["uploaded_file_name"] = uploaded_file.name
+                st.session_state["analysis_result"] = result
+                st.session_state["raw_text"] = raw_text
 
-    st.success(
-        f"{uploaded_file.name} uploaded successfully."
-    )
+            st.success("Document analyzed successfully!")
+            st.write(f"**Document Type:** {result['document_type']}")
+            st.write(f"**Clauses Processed:** {len(result['analysis'])}")
+            st.info("Now open Analysis or Clause View from the sidebar.")
 
-    st.write(
-        f"Saved at: {save_path}"
-    )
+        except Exception as e:
+            st.error(f"Error while analyzing document: {e}")

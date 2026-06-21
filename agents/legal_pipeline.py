@@ -1,69 +1,49 @@
 from agents.document_parser import DocumentParserAgent
 from agents.rights_law_agent import RightsLawAgent
 from agents.explainer_agent import ExplainerAgent
-from agents.next_steps_agent import NextStepsAgent
 from agents.risk_flagging_agent import RiskFlaggingAgent
-
-parser = DocumentParserAgent()
-
-rights = RightsLawAgent()
-
-explainer = ExplainerAgent()
-
-next_steps = NextStepsAgent()
-
-risk_agent = RiskFlaggingAgent()
+from agents.next_steps_agent import NextStepsAgent
 
 
-def analyze_document(text):
+class LegalWorkflow:
+    def __init__(self):
+        self.parser = DocumentParserAgent()
+        self.rights = RightsLawAgent()
+        self.explainer = ExplainerAgent()
+        self.risk = RiskFlaggingAgent()
+        self.next_steps = NextStepsAgent()
 
-    doc_type = parser.detect_document_type(text)
+    def analyze_document(self, text):
+        # Step 1: detect type
+        document_type = self.parser.detect_document_type(text)
 
-    clauses = parser.extract_clauses(text)
+        # Step 2: extract better clauses
+        clauses = self.parser.extract_clauses(text)
 
-    print("\nDocument Type:")
-    print(doc_type)
+        if not clauses:
+            clauses = [text[:1500]]
 
-    for clause in clauses[:3]:
+        results = []
 
-        print("\n")
-
-        print("=" * 60)
-
-        print("Clause:")
-        print(clause)
-
-        laws = rights.get_relevant_laws(
-            clause
-        )
-
-        print("\nRelevant Laws:")
-        print(laws)
-
-        explanation = (
-            explainer.explain(
-                clause
-            )
-        )
-
-        print("\nExplanation:")
-        print(explanation)
-
-        risks = (
-            risk_agent.detect_risk(
-                clause
-            )
-        )
-
-        print("\nRisks:")
-        print(risks)
-
-        steps = (
-            next_steps.suggest_next_steps(
+        for clause in clauses[:5]:
+            laws = self.rights.get_relevant_laws(clause, document_type)
+            explanation = self.explainer.explain(clause, document_type)
+            risks = self.risk.detect_risk(clause, document_type)
+            next_steps = self.next_steps.suggest_actions(
+                document_type,
                 clause,
-                explanation
+                risks
             )
-        )
 
-        print("\nNext Steps:")
-        print(steps)
+            results.append({
+                "clause": clause,
+                "laws": laws,
+                "explanation": explanation,
+                "risks": risks,
+                "next_steps": next_steps
+            })
+
+        return {
+            "document_type": document_type,
+            "analysis": results
+        }
