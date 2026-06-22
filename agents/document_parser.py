@@ -5,129 +5,74 @@ class DocumentParserAgent:
     def __init__(self):
         pass
 
+    def clean_text(self, text):
+        if not text:
+            return ""
+
+        # remove extra spaces/newlines
+        text = text.replace("\r", " ")
+        text = re.sub(r"\n+", "\n", text)
+        text = re.sub(r"[ \t]+", " ", text)
+        return text.strip()
+
     def detect_document_type(self, text):
-        """
-        Detect document type based on keywords found in the uploaded document.
-        """
-        text_lower = text.lower()
+        text = self.clean_text(text).lower()
 
-        # -----------------------------
-        # 1. Consumer Rights / Consumer Law
-        # -----------------------------
+        # Consumer / complaint related
         consumer_keywords = [
-            "consumer protection",
-            "consumer disputes",
-            "consumer commission",
-            "complaint",
-            "defect in goods",
-            "deficiency in service",
-            "e-commerce",
-            "product liability",
-            "district commission",
-            "state commission",
-            "national commission",
-            "consumer rights"
+            "consumer", "complaint", "consumer court",
+            "deficiency in service", "unfair trade practice",
+            "district commission", "state commission",
+            "national commission", "refund", "compensation"
         ]
 
-        # -----------------------------
-        # 2. Rental Agreement
-        # -----------------------------
+        # Rental related
         rental_keywords = [
-            "rent",
-            "rental agreement",
-            "lease",
-            "tenant",
-            "landlord",
-            "security deposit",
-            "premises",
-            "monthly rent",
-            "lock-in period",
-            "vacate"
+            "rent", "tenant", "landlord", "lease",
+            "security deposit", "premises", "monthly rent",
+            "vacate", "rental agreement"
         ]
 
-        # -----------------------------
-        # 3. Employment Agreement
-        # -----------------------------
+        # Employment related
         employment_keywords = [
-            "employee",
-            "employer",
-            "salary",
-            "employment",
-            "offer letter",
-            "internship",
-            "nda",
-            "non-disclosure",
-            "service agreement",
-            "probation",
-            "termination of employment"
+            "employee", "employer", "salary", "offer letter",
+            "employment", "job role", "termination",
+            "notice period", "company"
         ]
 
-        # -----------------------------
-        # 4. Legal Notice
-        # -----------------------------
-        legal_notice_keywords = [
-            "legal notice",
-            "you are hereby called upon",
-            "under instructions from my client",
-            "notice period",
-            "failure to comply",
-            "within 15 days",
-            "within 30 days",
-            "cause of action",
-            "demand notice"
-        ]
-
-        # -----------------------------
-        # 5. Legal Knowledge Documents
-        # Acts, Rules, Gazette, etc.
-        # -----------------------------
-        legal_knowledge_keywords = [
-            "act, 2019",
-            "rules, 2020",
-            "gazette of india",
-            "ministry",
-            "published by authority",
-            "section 3",
-            "sub-section",
-            "notification",
-            "consumer protection act",
-            "consumer protection rules",
-            "commission rules"
+        # Legal notice related
+        notice_keywords = [
+            "legal notice", "notice", "demand notice",
+            "you are hereby called upon", "failure to comply",
+            "under instructions from my client"
         ]
 
         # score-based detection
         scores = {
-            "Consumer Rights / Consumer Law": 0,
+            "Consumer Rights / Consumer Complaint": 0,
             "Rental Agreement": 0,
             "Employment Agreement": 0,
-            "Legal Notice": 0,
-            "Legal Knowledge Document": 0
+            "Legal Notice": 0
         }
 
         for word in consumer_keywords:
-            if word in text_lower:
-                scores["Consumer Rights / Consumer Law"] += 1
+            if word in text:
+                scores["Consumer Rights / Consumer Complaint"] += 1
 
         for word in rental_keywords:
-            if word in text_lower:
+            if word in text:
                 scores["Rental Agreement"] += 1
 
         for word in employment_keywords:
-            if word in text_lower:
+            if word in text:
                 scores["Employment Agreement"] += 1
 
-        for word in legal_notice_keywords:
-            if word in text_lower:
+        for word in notice_keywords:
+            if word in text:
                 scores["Legal Notice"] += 1
 
-        for word in legal_knowledge_keywords:
-            if word in text_lower:
-                scores["Legal Knowledge Document"] += 1
-
-        # pick highest score
         best_type = max(scores, key=scores.get)
 
-        # if nothing matched, fallback
         if scores[best_type] == 0:
             return "General Legal Document"
 
@@ -135,71 +80,57 @@ class DocumentParserAgent:
 
     def extract_clauses(self, text):
         """
-        Extract clauses from uploaded text.
-        This tries multiple strategies because different legal PDFs
-        have different formatting styles.
+        Extract readable clauses/sections from uploaded legal text.
+        Works for:
+        - numbered clauses
+        - headings
+        - complaint format paragraphs
+        - normal agreement paragraphs
         """
+        text = self.clean_text(text)
 
-        # Clean text first
-        text = text.replace("\r", "\n")
-        text = re.sub(r"\n{2,}", "\n\n", text).strip()
+        if not text:
+            return []
 
-        clauses = []
+        # Split into paragraphs by blank lines or long newlines
+        raw_parts = re.split(r"\n\s*\n|\n(?=[A-Z0-9][A-Za-z0-9 ,\-\(\)]{3,50}:?)", text)
 
-        # ---------------------------------------------------
-        # Strategy 1: Split by numbered headings like:
-        # 1. , 2. , 3.
-        # ---------------------------------------------------
-        numbered_clauses = re.split(r"\n\s*(\d+\.)", text)
+        cleaned_parts = []
+        for part in raw_parts:
+            part = part.strip()
 
-        if len(numbered_clauses) > 3:
-            combined = []
-            i = 1
-            while i < len(numbered_clauses) - 1:
-                clause_num = numbered_clauses[i]
-                clause_text = numbered_clauses[i + 1].strip()
-                combined.append(f"{clause_num} {clause_text}")
-                i += 2
+            # remove tiny useless fragments
+            if len(part) < 40:
+                continue
 
-            clauses = [c for c in combined if len(c.strip()) > 40]
+            # remove too much spacing
+            part = re.sub(r"\s+", " ", part)
 
-        # ---------------------------------------------------
-        # Strategy 2: Split by "Section", "Clause", etc.
-        # ---------------------------------------------------
-        if len(clauses) < 2:
-            section_split = re.split(
-                r"\n\s*(section\s+\d+|clause\s+\d+|article\s+\d+)",
-                text,
-                flags=re.IGNORECASE
-            )
+            cleaned_parts.append(part)
 
-            if len(section_split) > 3:
-                combined = []
-                i = 1
-                while i < len(section_split) - 1:
-                    heading = section_split[i]
-                    clause_text = section_split[i + 1].strip()
-                    combined.append(f"{heading} {clause_text}")
-                    i += 2
+        # If not enough clauses found, fallback by sentence grouping
+        if len(cleaned_parts) == 0:
+            sentences = re.split(r"(?<=[.!?])\s+", text)
+            temp = []
+            chunk = ""
 
-                clauses = [c for c in combined if len(c.strip()) > 40]
+            for sentence in sentences:
+                if len(chunk) + len(sentence) < 350:
+                    chunk += " " + sentence
+                else:
+                    if len(chunk.strip()) > 40:
+                        temp.append(chunk.strip())
+                    chunk = sentence
 
-        # ---------------------------------------------------
-        # Strategy 3: Split by paragraphs if no structured clauses found
-        # ---------------------------------------------------
-        if len(clauses) < 2:
-            paragraphs = text.split("\n\n")
-            clauses = [p.strip() for p in paragraphs if len(p.strip()) > 80]
+            if len(chunk.strip()) > 40:
+                temp.append(chunk.strip())
 
-        # ---------------------------------------------------
-        # Final fallback: chunk text manually
-        # ---------------------------------------------------
-        if len(clauses) == 0:
-            chunk_size = 1200
-            clauses = [
-                text[i:i + chunk_size].strip()
-                for i in range(0, len(text), chunk_size)
-                if text[i:i + chunk_size].strip()
-            ]
+            cleaned_parts = temp
 
-        return clauses[:10]
+        # Make clauses short and understandable
+        final_clauses = []
+        for part in cleaned_parts[:8]:
+            short_part = part[:500].strip()
+            final_clauses.append(short_part)
+
+        return final_clauses

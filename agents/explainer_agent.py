@@ -2,30 +2,24 @@ class ExplainerAgent:
     def __init__(self):
         pass
 
-    def explain(self, clause):
+    def explain(self, clause, laws=None):
         clause_lower = clause.lower()
 
-        # Rent / Deposit related
         if "rent" in clause_lower or "deposit" in clause_lower:
-            return "This clause talks about rent or deposit payment. Check how much you must pay, when to pay, and whether the deposit is refundable."
+            return "This clause talks about rent or deposit. Check the amount, payment date, and refund conditions."
 
-        # Notice / termination related
-        elif "notice" in clause_lower or "terminate" in clause_lower:
-            return "This clause explains when the agreement can end and how much notice must be given before leaving or ending the contract."
+        elif "notice" in clause_lower or "termination" in clause_lower:
+            return "This clause explains notice period or ending of the agreement. Check how many days notice must be given."
 
-        # Salary / employment related
-        elif "salary" in clause_lower or "employee" in clause_lower or "employer" in clause_lower:
-            return "This clause is about job terms such as salary, work duties, or employee responsibilities. Read it carefully before accepting."
+        elif "consumer" in clause_lower or "complaint" in clause_lower:
+            return "This clause is related to consumer rights or complaint filing. It explains how a consumer can raise an issue or seek relief."
 
-        # Complaint / consumer related
-        elif "complaint" in clause_lower or "consumer" in clause_lower:
-            return "This clause explains consumer rights or complaint process. It helps the user understand how to raise a complaint or seek help."
+        elif "employee" in clause_lower or "salary" in clause_lower or "employer" in clause_lower:
+            return "This clause is about employment terms such as salary, duties, or employee responsibilities."
 
-        # Legal notice related
-        elif "legal notice" in clause_lower or "demand" in clause_lower:
-            return "This clause is part of a legal notice. It tells what issue is raised and what action is expected from the other person."
+        elif "payment" in clause_lower or "due" in clause_lower:
+            return "This clause talks about payment responsibility. Check the amount to be paid and the deadline."
 
-        # Default simple explanation
         else:
             short_clause = clause[:180].replace("\n", " ")
-            return f"This clause explains an important legal point. In simple words, it means: {short_clause}..."
+            return f"Simple meaning: {short_clause}..."

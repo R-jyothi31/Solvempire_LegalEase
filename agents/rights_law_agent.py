@@ -3,66 +3,32 @@ class RightsLawAgent:
         pass
 
     def get_relevant_laws(self, clause, document_type="General Legal Document"):
-        clause_lower = clause.lower()
-        matched_laws = []
-
-        # 1) Consumer rights / consumer law documents
-        if document_type == "Consumer Rights / Consumer Law":
-            matched_laws.append({
+        if document_type == "Consumer Rights / Consumer Complaint":
+            return [{
                 "source": "Consumer Protection Act, 2019",
-                "law_text": "This clause may relate to consumer rights, complaint filing, unfair trade practices, defective goods, deficient services, refund rights, or consumer commissions."
-            })
+                "law_text": "This section may relate to consumer complaint, refund, compensation, or unfair trade practice."
+            }]
 
-            if "e-commerce" in clause_lower:
-                matched_laws.append({
-                    "source": "Consumer Protection (E-Commerce) Rules",
-                    "law_text": "E-commerce entities must provide fair information, grievance redressal, and consumer protection safeguards."
-                })
+        elif document_type == "Rental Agreement":
+            return [{
+                "source": "Rental Agreement Guidance",
+                "law_text": "Check rent amount, deposit, notice period, maintenance duties, and lock-in terms."
+            }]
 
-            if "complaint" in clause_lower or "commission" in clause_lower:
-                matched_laws.append({
-                    "source": "Consumer Disputes Redressal Commission Rules",
-                    "law_text": "Consumer commissions handle complaints related to goods, services, compensation, and unfair trade practices."
-                })
-
-            return matched_laws
-
-        # 2) Rental agreements
-        if document_type == "Rental Agreement":
-            matched_laws.append({
-                "source": "Rental / Tenancy Guidance",
-                "law_text": "Check rent amount, security deposit, notice period, maintenance duties, lock-in clause, and termination conditions carefully."
-            })
-            return matched_laws
-
-        # 3) Employment agreements
-        if document_type == "Employment Agreement":
-            matched_laws.append({
+        elif document_type == "Employment Agreement":
+            return [{
                 "source": "Employment Contract Guidance",
-                "law_text": "Review salary, leave policy, working hours, notice period, confidentiality, and termination clauses carefully."
-            })
-            return matched_laws
+                "law_text": "Check salary, job role, notice period, leave policy, and termination conditions."
+            }]
 
-        # 4) Legal notice
-        if document_type == "Legal Notice":
-            matched_laws.append({
+        elif document_type == "Legal Notice":
+            return [{
                 "source": "Legal Notice Guidance",
-                "law_text": "A legal notice should clearly state the issue, demand, timeline, and legal basis for the claim."
-            })
-            return matched_laws
+                "law_text": "Understand the claim made, deadline for reply, and documents needed to respond."
+            }]
 
-        # 5) Legal knowledge document / acts / rules / gazette docs
-        if document_type == "Legal Knowledge Document":
-            matched_laws.append({
-                "source": "Legal Reference Document",
-                "law_text": "This document appears to be a legal act, rule book, gazette, or official legal reference source used for legal guidance and retrieval."
-            })
-            return matched_laws
-
-        # 6) Default fallback
-        matched_laws.append({
-            "source": "General Legal Guidance",
-            "law_text": "Review this clause carefully and compare it with the rights and obligations of both parties before signing or responding."
-        })
-
-        return matched_laws
+        else:
+            return [{
+                "source": "General Legal Guidance",
+                "law_text": "Read this clause carefully and understand your rights, duties, and risks."
+            }]

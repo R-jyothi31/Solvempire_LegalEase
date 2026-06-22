@@ -14,26 +14,34 @@ class LegalWorkflow:
         self.next_steps = NextStepsAgent()
 
     def analyze_document(self, text):
-        # Step 1: detect type
         document_type = self.parser.detect_document_type(text)
-
-        # Step 2: extract better clauses
         clauses = self.parser.extract_clauses(text)
-
-        if not clauses:
-            clauses = [text[:1500]]
 
         results = []
 
+        if not clauses:
+            return {
+                "document_type": document_type,
+                "analysis": [
+                    {
+                        "clause": "No clear clauses could be extracted from this document.",
+                        "laws": [{"source": "System", "law_text": "Try uploading a clearer text-based PDF."}],
+                        "explanation": "The uploaded file may be scanned, image-based, or not properly structured for clause extraction.",
+                        "risks": "Unable to identify risks because no readable clauses were found.",
+                        "next_steps": [
+                            "Upload a text-based PDF if possible.",
+                            "Check whether the PDF contains selectable text.",
+                            "Use OCR if the PDF is image-based."
+                        ]
+                    }
+                ]
+            }
+
         for clause in clauses[:5]:
             laws = self.rights.get_relevant_laws(clause, document_type)
-            explanation = self.explainer.explain(clause, document_type)
-            risks = self.risk.detect_risk(clause, document_type)
-            next_steps = self.next_steps.suggest_actions(
-                document_type,
-                clause,
-                risks
-            )
+            explanation = self.explainer.explain(clause, laws)
+            risks = self.risk.detect_risk(clause)
+            next_steps = self.next_steps.suggest_actions(document_type, clause, risks)
 
             results.append({
                 "clause": clause,
