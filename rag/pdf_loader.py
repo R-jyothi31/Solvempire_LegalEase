@@ -1,44 +1,29 @@
 import fitz
 import os
 
-RAW_DATA_PATH = "data/raw"
-TEXT_OUTPUT_PATH = "data/processed/texts"
-
-os.makedirs(TEXT_OUTPUT_PATH, exist_ok=True)
-
-def extract_text_from_pdf(pdf_path):
-    text = ""
+def extract_text(pdf_path):
 
     doc = fitz.open(pdf_path)
+
+    text = ""
 
     for page in doc:
         text += page.get_text()
 
     return text
 
+def classify_document(filename):
 
-def process_all_pdfs():
+    filename = filename.lower()
 
-    for root, dirs, files in os.walk(RAW_DATA_PATH):
+    if "rental" in filename:
+        return "rental"
 
-        for file in files:
+    elif "employment" in filename:
+        return "employment"
 
-            if file.endswith(".pdf"):
+    elif "notice" in filename:
+        return "notice"
 
-                pdf_path = os.path.join(root, file)
-
-                text = extract_text_from_pdf(pdf_path)
-
-                output_file = os.path.join(
-                    TEXT_OUTPUT_PATH,
-                    file.replace(".pdf", ".txt")
-                )
-
-                with open(output_file, "w", encoding="utf-8") as f:
-                    f.write(text)
-
-                print(f"Processed {file}")
-
-
-if __name__ == "__main__":
-    process_all_pdfs()
+    else:
+        return "consumer"

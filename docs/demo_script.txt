@@ -1,0 +1,30 @@
+DEMO SCRIPT – LEGALEASE
+
+1. INTRODUCTION
+Hello everyone, we are Team 2 and our project is LegalEase, an AI Legal Document Assistant.
+This project helps users understand legal documents such as rental agreements, employment contracts, consumer complaints, and legal notices in simple language.
+
+2. PROBLEM
+Most users do not understand legal language in agreements and notices.
+They may sign documents without knowing risky clauses or their legal rights.
+Our project solves this by using RAG and AI agents.
+
+3. PROJECT FLOW
+First, the user uploads a legal PDF.
+The system extracts text from the PDF.
+Then the document parser agent identifies the document type and extracts important clauses.
+The rights agent retrieves relevant legal rights from the legal knowledge base.
+The explainer agent converts legal language into simple English.
+The risk agent detects risky or unfair clauses.
+The next steps agent suggests what the user should do next.
+
+4. DEMO
+Now we will upload a legal PDF.
+After upload, the system identifies the document type.
+It displays extracted clauses.
+It shows relevant laws, simple explanation, risks, and suggested next steps.
+The FAQ section also allows the user to ask questions about the uploaded document.
+
+5. CONCLUSION
+LegalEase helps common people understand legal documents easily and supports better legal awareness using AI.
+Thank you.
