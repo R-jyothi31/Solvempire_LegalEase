@@ -11,30 +11,48 @@ splitter = RecursiveCharacterTextSplitter(
     chunk_overlap=200
 )
 
-for file in os.listdir(TEXT_FOLDER):
 
-    if file.endswith(".txt"):
+def split_text_into_chunks(text):
+    """
+    Split a single text string into chunks.
+    Used in tests and reusable in other files.
+    """
+    if not text or not text.strip():
+        return []
 
-        with open(
-            os.path.join(TEXT_FOLDER, file),
-            "r",
-            encoding="utf-8"
-        ) as f:
+    chunks = splitter.split_text(text)
+    return chunks
 
-            text = f.read()
 
-        chunks = splitter.split_text(text)
+def process_all_text_files():
+    """
+    Read all .txt files from data/processed/texts
+    and create chunk files in data/processed/chunks
+    """
+    if not os.path.exists(TEXT_FOLDER):
+        print(f"Text folder not found: {TEXT_FOLDER}")
+        return
 
-        for i, chunk in enumerate(chunks):
+    for file in os.listdir(TEXT_FOLDER):
+        if file.endswith(".txt"):
+            file_path = os.path.join(TEXT_FOLDER, file)
 
-            filename = file.replace(".txt", f"_chunk_{i}.txt")
+            with open(file_path, "r", encoding="utf-8") as f:
+                text = f.read()
 
-            with open(
-                os.path.join(CHUNK_FOLDER, filename),
-                "w",
-                encoding="utf-8"
-            ) as chunk_file:
+            chunks = split_text_into_chunks(text)
 
-                chunk_file.write(chunk)
+            for i, chunk in enumerate(chunks):
+                chunk_filename = file.replace(".txt", f"_chunk_{i}.txt")
+                chunk_path = os.path.join(CHUNK_FOLDER, chunk_filename)
 
-print("Chunking Complete")
+                with open(chunk_path, "w", encoding="utf-8") as chunk_file:
+                    chunk_file.write(chunk)
+
+            print(f"Chunked: {file} -> {len(chunks)} chunks")
+
+    print("Chunking Complete")
+
+
+if __name__ == "__main__":
+    process_all_text_files()
