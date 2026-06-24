@@ -1,39 +1,40 @@
 class NextStepsAgent:
-    def __init__(self):
-        pass
-
     def suggest_actions(self, document_type, clause, risks):
-        if document_type == "Consumer Rights / Consumer Complaint":
-            return [
-                "Check the issue mentioned in the complaint.",
-                "Collect bills, receipts, and proof related to the problem.",
-                "See whether refund, replacement, or compensation is being requested."
+        doc = document_type.lower()
+        clause_lower = clause.lower()
+
+        steps = []
+
+        if "consumer" in doc:
+            steps = [
+                "Check whether the complaint clearly states the product/service issue.",
+                "Collect bills, screenshots, warranty card, and payment proof.",
+                "Ask for refund, replacement, or compensation if applicable.",
+                "If the seller does not respond, consider filing a consumer complaint."
             ]
 
-        elif document_type == "Rental Agreement":
-            return [
-                "Check rent, deposit, and notice period.",
-                "Ask about unclear clauses before signing.",
-                "Keep a signed copy of the agreement."
+        elif "rental" in doc or "lease" in doc or "pg" in doc:
+            steps = [
+                "Check rent, deposit, notice period, and maintenance terms carefully.",
+                "Clarify any lock-in, eviction, or penalty clause before signing.",
+                "Keep a signed copy of the agreement and payment proof.",
+                "Negotiate any unfair clause before accepting the agreement."
             ]
 
-        elif document_type == "Employment Agreement":
-            return [
-                "Check salary, notice period, and job role.",
-                "Read termination and leave rules carefully.",
-                "Keep a signed copy of the contract."
-            ]
-
-        elif document_type == "Legal Notice":
-            return [
-                "Read the notice carefully.",
-                "Collect documents related to the issue.",
-                "Respond within the deadline if required."
+        elif "employment" in doc or "internship" in doc or "nda" in doc:
+            steps = [
+                "Check notice period, termination terms, and confidentiality clauses.",
+                "Clarify salary, working hours, leave rules, and role expectations.",
+                "Keep a signed copy of the agreement for future reference.",
+                "Ask the employer to explain any unclear or one-sided term."
             ]
 
         else:
-            return [
-                "Read the clause carefully.",
-                "Check if it creates any legal duty or risk.",
-                "Take legal advice if the document is important."
+            steps = [
+                "Read the document carefully and identify important obligations.",
+                "Check whether any clause creates financial or legal risk.",
+                "Keep a copy of the document and supporting proof.",
+                "Consult a legal expert if the document creates serious obligations."
             ]
+
+        return steps

@@ -1,36 +1,29 @@
 import os
 import sys
-import fitz
 
-# --------------------------------------------------
-# Add project root folder to Python path
-# --------------------------------------------------
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
+# ---------------------------------------------------
+# Path setup
+# ---------------------------------------------------
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))          # frontend/
+PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))   # Solvempire_LegalEase/
 
 if PROJECT_ROOT not in sys.path:
-    sys.path.append(PROJECT_ROOT)
+    sys.path.insert(0, PROJECT_ROOT)
 
-# Now imports from project folders will work
+# ---------------------------------------------------
+# Imports
+# ---------------------------------------------------
+from rag.pdf_loader import extract_text_from_pdf
 from agents.legal_pipeline import LegalWorkflow
 from agents.faq_agent import FAQAgent
 
-# --------------------------------------------------
-# Upload folder
-# --------------------------------------------------
-UPLOAD_FOLDER = os.path.join(PROJECT_ROOT, "data", "uploads")
+UPLOAD_FOLDER = os.path.join(PROJECT_ROOT, "uploaded_docs")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-# --------------------------------------------------
-# Create workflow objects
-# --------------------------------------------------
-workflow = LegalWorkflow()
-faq_agent = FAQAgent()
 
 
 def save_uploaded_file(uploaded_file):
     """
-    Save uploaded PDF file into data/uploads folder
+    Save uploaded PDF into uploaded_docs folder.
     """
     file_path = os.path.join(UPLOAD_FOLDER, uploaded_file.name)
 
@@ -40,58 +33,43 @@ def save_uploaded_file(uploaded_file):
     return file_path
 
 
-def extract_text_from_pdf(pdf_path):
+def analyze_uploaded_document(file_path):
     """
-    Extract text from PDF using PyMuPDF
+    Extract text from uploaded PDF and analyze it using LegalWorkflow.
     """
-    text = ""
-    doc = fitz.open(pdf_path)
+    try:
+        text = extract_text_from_pdf(file_path)
 
-    for page in doc:
-        page_text = page.get_text()
-        if page_text:
-            text += page_text + "\n"
+        if not text or not text.strip():
+            return {
+                "document_type": "Unknown Document",
+                "document_summary": "No readable text found in the uploaded PDF.",
+                "analysis": [],
+                "full_text": ""
+            }
 
-    return text.strip()
+        workflow = LegalWorkflow()
+        result = workflow.analyze_document(text)
 
+        if not isinstance(result, dict):
+            result = {
+                "document_type": "Unknown Document",
+                "document_summary": "Analysis completed, but output format was invalid.",
+                "analysis": []
+            }
 
-def analyze_uploaded_document(pdf_path):
-    """
-    Extract text from uploaded PDF and analyze using LegalWorkflow
-    """
-    text = extract_text_from_pdf(pdf_path)
+        result["full_text"] = text
+        return result
 
-    if not text.strip():
+    except Exception as e:
         return {
-            "document_type": "Unknown",
-            "analysis": [
-                {
-                    "clause": "No readable text found in the uploaded PDF.",
-                    "laws": [
-                        {
-                            "source": "System",
-                            "law_text": "The uploaded PDF may be image-based or scanned."
-                        }
-                    ],
-                    "explanation": "Please upload a text-based PDF or run OCR on the document first.",
-                    "risks": "Unable to analyze because no readable text was extracted.",
-                    "next_steps": [
-                        "Try uploading a text-based PDF.",
-                        "Use OCR if the PDF is scanned.",
-                        "Re-upload the document."
-                    ]
-                }
-            ]
+            "document_type": "Error",
+            "document_summary": f"Error while analyzing document: {str(e)}",
+            "analysis": [],
+            "full_text": ""
         }
-
-    return workflow.analyze_document(text)
 
 
 def answer_faq_question(question, analysis_result):
-    if not analysis_result:
-        return "Please upload and analyze a document first."
-
-    if not question or not isinstance(question, str):
-        return "Please enter a valid question."
-
+    faq_agent = FAQAgent()
     return faq_agent.answer_question(question, analysis_result)
