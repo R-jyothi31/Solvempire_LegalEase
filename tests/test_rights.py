@@ -1,24 +1,31 @@
-import sys
 import os
+import sys
 
-sys.path.append(
-    os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..")
-    )
-)
-from agents.rights_law_agent import RightsAgent
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-agent = RightsAgent()
+from agents.rights_law_agent import RightsLawAgent
 
-query = "tenant security deposit"
+agent = RightsLawAgent()
 
-results = agent.get_relevant_laws(query)
+sample_clause = """
+The seller refused to replace the defective product even though it was under warranty.
+"""
 
-for i, result in enumerate(results):
+result = agent.get_relevant_laws(sample_clause)
 
-    print("\n")
-    print("=" * 50)
+print("=== RIGHTS AGENT OUTPUT ===\n")
 
-    print(f"Law {i+1}")
+# If result is a dictionary
+if isinstance(result, dict):
+    for key, value in result.items():
+        print(f"{key}: {value}")
 
-    print(result["content"])
+# If result is a list
+elif isinstance(result, list):
+    for i, item in enumerate(result, start=1):
+        print(f"\nResult {i}:")
+        print(item)
+
+# If result is a string
+else:
+    print(result)
