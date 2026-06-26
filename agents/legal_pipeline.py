@@ -19,39 +19,53 @@ class LegalWorkflow:
 
         results = []
 
-        if not clauses:
-            return {
-                "document_type": document_type,
-                "analysis": [
-                    {
-                        "clause": "No clear clauses could be extracted from this document.",
-                        "laws": [{"source": "System", "law_text": "Try uploading a clearer text-based PDF."}],
-                        "explanation": "The uploaded file may be scanned, image-based, or not properly structured for clause extraction.",
-                        "risks": "Unable to identify risks because no readable clauses were found.",
-                        "next_steps": [
-                            "Upload a text-based PDF if possible.",
-                            "Check whether the PDF contains selectable text.",
-                            "Use OCR if the PDF is image-based."
-                        ]
-                    }
-                ]
-            }
+        for clause in clauses[:8]:
+            laws = self.rights.get_relevant_laws(clause)
 
-        for clause in clauses[:5]:
-            laws = self.rights.get_relevant_laws(clause, document_type)
-            explanation = self.explainer.explain(clause, laws)
+            explanation_output = self.explainer.explain(clause)
+
+            if isinstance(explanation_output, dict):
+                summary = explanation_output.get("summary", "")
+                explanation = explanation_output.get("simple_explanation", "")
+            else:
+                summary = str(explanation_output)
+                explanation = str(explanation_output)
+
             risks = self.risk.detect_risk(clause)
-            next_steps = self.next_steps.suggest_actions(document_type, clause, risks)
+            next_steps = self.next_steps.suggest_actions(
+                document_type,
+                clause,
+                risks
+            )
 
             results.append({
                 "clause": clause,
-                "laws": laws,
+                "summary": summary,
                 "explanation": explanation,
-                "risks": risks,
-                "next_steps": next_steps
+                "laws": laws if isinstance(laws, list) else [str(laws)],
+                "risks": risks if isinstance(risks, list) else [str(risks)],
+                "next_steps": next_steps if isinstance(next_steps, list) else [str(next_steps)]
             })
+
+        document_summary = self._build_document_summary(document_type, results)
 
         return {
             "document_type": document_type,
+            "document_summary": document_summary,
             "analysis": results
         }
+
+    def _build_document_summary(self, document_type, results):
+        if not results:
+            return f"The uploaded file appears to be a {document_type}, but no clear clauses were extracted."
+
+        points = []
+        for item in results[:5]:
+            if item.get("summary"):
+                points.append(item["summary"])
+
+        if not points:
+            return f"This document is identified as {document_type}. Clause extraction was limited."
+
+        summary_text = "\n".join([f"- {p}" for p in points[:5]])
+        return f"This document is identified as {document_type}. Main extracted points are:\n{summary_text}"

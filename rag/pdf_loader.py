@@ -1,29 +1,22 @@
-import fitz
-import os
+import fitz  # PyMuPDF
 
-def extract_text(pdf_path):
 
-    doc = fitz.open(pdf_path)
-
+def extract_text_from_pdf(pdf_path):
+    """
+    Extract full text from a PDF file and return it as a string.
+    """
     text = ""
 
-    for page in doc:
-        text += page.get_text()
+    try:
+        doc = fitz.open(pdf_path)
 
-    return text
+        for page in doc:
+            page_text = page.get_text("text")
+            if page_text:
+                text += page_text + "\n"
 
-def classify_document(filename):
+        doc.close()
+        return text.strip()
 
-    filename = filename.lower()
-
-    if "rental" in filename:
-        return "rental"
-
-    elif "employment" in filename:
-        return "employment"
-
-    elif "notice" in filename:
-        return "notice"
-
-    else:
-        return "consumer"
+    except Exception as e:
+        raise Exception(f"Failed to extract text from PDF: {str(e)}")
