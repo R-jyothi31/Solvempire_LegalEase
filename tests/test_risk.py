@@ -1,17 +1,13 @@
 import sys
 import os
 
-sys.path.append(
-    os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..")
-    )
-)
-from agents.risk_flagging_agent import RiskFlaggingAgent
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-agent = RiskFlaggingAgent()
+from agents.risk_flagging_agent import flag_risks
 
-print(
-    agent.detect_risk(
-        "Landlord may terminate immediately without notice."
-    )
+result = flag_risks(
+    "Landlord may terminate immediately without notice."
 )
+
+print("=== RISK FLAGGING OUTPUT ===\n")
+print(result)

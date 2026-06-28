@@ -1,58 +1,118 @@
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 import os
 
-TEXT_FOLDER = "data/processed/texts"
-CHUNK_FOLDER = "data/processed/chunks"
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
 
-os.makedirs(CHUNK_FOLDER, exist_ok=True)
 
 splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1000,
-    chunk_overlap=200
+    chunk_size=800,
+    chunk_overlap=150,
+    separators=[
+        "\n\n",
+        "\n",
+        ". ",
+        " "
+    ]
 )
 
 
-def split_text_into_chunks(text):
+def chunk_document(document):
     """
-    Split a single text string into chunks.
-    Used in tests and reusable in other files.
+    Chunk a processed document while preserving metadata.
+
+    document format:
+    {
+        "filename": "...",
+        "text": "...",
+        "language": "...",
+        "document_type": "...",
+        "clauses": [...]
+    }
     """
-    if not text or not text.strip():
-        return []
 
-    chunks = splitter.split_text(text)
-    return chunks
+    documents = []
+
+    clauses = document["clauses"]
+
+    for clause_number, clause in enumerate(clauses, start=1):
+
+        chunks = splitter.split_text(clause)
+
+        for chunk_index, chunk in enumerate(chunks):
+
+            metadata = {
+
+                "source": document["filename"],
+
+                "document_type": document["document_type"],
+
+                "language": document["language"],
+
+                "clause_number": clause_number,
+
+                "chunk_number": chunk_index + 1
+
+            }
+
+            documents.append(
+
+                Document(
+
+                    page_content=chunk,
+
+                    metadata=metadata
+
+                )
+
+            )
+
+    return documents
 
 
-def process_all_text_files():
+def chunk_multiple_documents(documents):
     """
-    Read all .txt files from data/processed/texts
-    and create chunk files in data/processed/chunks
+    Chunk multiple uploaded documents.
     """
-    if not os.path.exists(TEXT_FOLDER):
-        print(f"Text folder not found: {TEXT_FOLDER}")
-        return
 
-    for file in os.listdir(TEXT_FOLDER):
-        if file.endswith(".txt"):
-            file_path = os.path.join(TEXT_FOLDER, file)
+    all_chunks = []
 
-            with open(file_path, "r", encoding="utf-8") as f:
-                text = f.read()
+    for document in documents:
 
-            chunks = split_text_into_chunks(text)
+        chunks = chunk_document(document)
 
-            for i, chunk in enumerate(chunks):
-                chunk_filename = file.replace(".txt", f"_chunk_{i}.txt")
-                chunk_path = os.path.join(CHUNK_FOLDER, chunk_filename)
+        all_chunks.extend(chunks)
 
-                with open(chunk_path, "w", encoding="utf-8") as chunk_file:
-                    chunk_file.write(chunk)
+    return all_chunks
 
-            print(f"Chunked: {file} -> {len(chunks)} chunks")
 
-    print("Chunking Complete")
+def chunk_statistics(chunks):
+    """
+    Display chunk statistics.
+    """
+
+    print("\n========== Chunk Statistics ==========")
+
+    print(f"Total Chunks : {len(chunks)}")
+
+    if len(chunks) > 0:
+
+        print("\nExample Metadata")
+
+        print(chunks[0].metadata)
+
+        print("\nExample Chunk")
+
+        print(chunks[0].page_content[:300])
 
 
 if __name__ == "__main__":
-    process_all_text_files()
+
+    from rag.pdf_loader import load_document
+
+    pdf = load_document(
+        "data/raw/employment_contracts/sample.pdf"
+    )
+
+    chunks = chunk_document(pdf)
+
+    chunk_statistics(chunks)

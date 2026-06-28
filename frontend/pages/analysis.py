@@ -1,68 +1,121 @@
 import streamlit as st
 
-st.title("Document Analysis")
+# -----------------------------------------------------
+# Check if document has been analyzed
+# -----------------------------------------------------
+if "analysis_complete" not in st.session_state:
+    st.session_state.analysis_complete = False
 
-# Get stored analysis result
-result = st.session_state.get("analysis_result", None)
-
-# If no result found
-if result is None:
-    st.warning("Please upload and analyze a document first.")
+if not st.session_state.analysis_complete:
+    st.warning("Please upload a document first.")
     st.stop()
 
-# If result exists, show overview
-st.subheader("Document Overview")
-st.write(f"**Document Type:** {result.get('document_type', 'Unknown')}")
-st.write(f"**Total Clauses Processed:** {len(result.get('analysis', []))}")
+# -----------------------------------------------------
+# Page Title
+# -----------------------------------------------------
+st.set_page_config(
+    page_title="Document Analysis",
+    page_icon="📄",
+    layout="wide"
+)
+
+st.title("📄 Document Analysis")
 
 st.markdown("---")
 
-# Show clause-wise analysis
-analysis_items = result.get("analysis", [])
+# -----------------------------------------------------
+# Document Information
+# -----------------------------------------------------
+col1, col2 = st.columns(2)
 
-if not analysis_items:
-    st.info("No clauses were found in the analyzed document.")
+with col1:
+
+    st.subheader("📁 File Information")
+
+    st.write(
+        "**Filename:**",
+        st.session_state.uploaded_file
+    )
+
+    st.write(
+        "**Document Type:**",
+        st.session_state.document_type
+    )
+
+with col2:
+
+    st.subheader("🌐 Language")
+
+    st.write(
+        st.session_state.language
+    )
+
+st.markdown("---")
+
+# -----------------------------------------------------
+# Extracted Text
+# -----------------------------------------------------
+st.subheader("📜 Extracted Text")
+
+st.text_area(
+    "Document Text",
+    st.session_state.document_text,
+    height=250
+)
+
+st.markdown("---")
+
+# -----------------------------------------------------
+# Extracted Clauses
+# -----------------------------------------------------
+st.subheader("📑 Extracted Clauses")
+
+clauses = st.session_state.clauses
+
+if len(clauses) == 0:
+
+    st.info("No clauses found.")
+
 else:
-    for i, item in enumerate(analysis_items, start=1):
-        st.subheader(f"Clause {i}")
 
-        st.write("**Clause Text**")
-        st.write(item.get("clause", "No clause text available."))
+    for i, clause in enumerate(clauses, start=1):
 
-        st.write("**Relevant Laws**")
-        laws = item.get("laws", [])
-        if isinstance(laws, list) and laws:
-            for law in laws:
-                if isinstance(law, dict):
-                    st.write(f"- {law.get('law_name', 'Law')}: {law.get('description', '')}")
-                else:
-                    st.write(f"- {law}")
-        else:
-            st.write("No relevant laws found.")
+        with st.expander(f"Clause {i}"):
 
-        st.write("**Explanation**")
-        st.write(item.get("explanation", "No explanation available."))
+            st.write(clause)
 
-        st.write("**Risks**")
-        risks = item.get("risks", [])
-        if isinstance(risks, list):
-            if risks:
-                for risk in risks:
-                    st.write(f"- {risk}")
-            else:
-                st.write("No major risks found.")
-        else:
-            st.write(risks)
+st.markdown("---")
 
-        st.write("**Next Steps**")
-        next_steps = item.get("next_steps", [])
-        if isinstance(next_steps, list):
-            if next_steps:
-                for step in next_steps:
-                    st.write(f"- {step}")
-            else:
-                st.write("No next steps available.")
-        else:
-            st.write(next_steps)
+# -----------------------------------------------------
+# Summary
+# -----------------------------------------------------
+st.subheader("📋 Summary")
 
-        st.markdown("---")
+st.info(
+    f"""
+Document Type : {st.session_state.document_type}
+
+Language : {st.session_state.language}
+
+Total Clauses : {len(st.session_state.clauses)}
+"""
+)
+
+st.markdown("---")
+
+# -----------------------------------------------------
+# Navigation Buttons
+# -----------------------------------------------------
+col1, col2 = st.columns(2)
+
+with col1:
+
+    if st.button("⬅ Back to Upload"):
+
+        st.switch_page("pages/upload.py")
+
+with col2:
+
+    if st.button("Next ➜ FAQ"):
+
+        st.switch_page("pages/faq.py")

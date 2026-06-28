@@ -16,9 +16,9 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 # --------------------------------------------------
-# Import Rights Agent
+# Import Agent
 # --------------------------------------------------
-from agents.rights_law_agent import get_rights
+from agents.next_steps_agent import suggest_next_steps
 
 # --------------------------------------------------
 # Check Session
@@ -31,22 +31,22 @@ if not st.session_state.analysis_complete:
     st.stop()
 
 # --------------------------------------------------
-# Page Config
+# Page Configuration
 # --------------------------------------------------
 st.set_page_config(
-    page_title="Legal Rights",
-    page_icon="⚖️",
+    page_title="Legal Recommendations",
+    page_icon="✅",
     layout="wide"
 )
 
-st.title("⚖️ Legal Rights Analysis")
+st.title("✅ Legal Recommendations")
 
 st.markdown("---")
 
 # --------------------------------------------------
-# Document Details
+# Document Information
 # --------------------------------------------------
-st.write("### Uploaded Document")
+st.subheader("Uploaded Document")
 
 st.write("**File Name:**", st.session_state.uploaded_file)
 
@@ -57,26 +57,43 @@ st.write("**Language:**", st.session_state.language)
 st.markdown("---")
 
 # --------------------------------------------------
-# Rights Analysis
+# AI Recommendations
 # --------------------------------------------------
-if st.button("Identify Legal Rights"):
+if st.button("Generate Recommendations"):
 
-    with st.spinner("Analyzing legal rights..."):
+    with st.spinner("Generating legal recommendations..."):
 
-        rights = get_rights(
+        recommendations = suggest_next_steps(
             st.session_state.document_text
         )
 
-        st.session_state.rights = rights
+        st.session_state.next_steps = recommendations
 
 # --------------------------------------------------
-# Display Rights
+# Display Recommendations
 # --------------------------------------------------
-if "rights" in st.session_state:
+if "next_steps" in st.session_state:
 
-    st.subheader("Legal Rights")
+    st.subheader("AI Recommendations")
 
-    st.success(st.session_state.rights)
+    st.success(st.session_state.next_steps)
+
+st.markdown("---")
+
+# --------------------------------------------------
+# Summary
+# --------------------------------------------------
+st.subheader("Document Summary")
+
+st.info(f"""
+**Document Name:** {st.session_state.uploaded_file}
+
+**Document Type:** {st.session_state.document_type}
+
+**Language:** {st.session_state.language}
+
+**Total Clauses:** {len(st.session_state.clauses)}
+""")
 
 st.markdown("---")
 
@@ -87,12 +104,16 @@ col1, col2 = st.columns(2)
 
 with col1:
 
-    if st.button("⬅ Back to FAQ"):
+    if st.button("⬅ Back to Risk Analysis"):
 
-        st.switch_page("pages/faq.py")
+        st.switch_page("pages/risk.py")
 
 with col2:
 
-    if st.button("Next ➜ Risk Analysis"):
+    if st.button("Analyze Another Document"):
 
-        st.switch_page("pages/risk.py")
+        # Clear Session State
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+
+        st.switch_page("pages/upload.py")

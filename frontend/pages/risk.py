@@ -16,9 +16,9 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 # --------------------------------------------------
-# Import Rights Agent
+# Import Risk Agent
 # --------------------------------------------------
-from agents.rights_law_agent import get_rights
+from agents.risk_flagging_agent import flag_risks
 
 # --------------------------------------------------
 # Check Session
@@ -31,22 +31,22 @@ if not st.session_state.analysis_complete:
     st.stop()
 
 # --------------------------------------------------
-# Page Config
+# Page Configuration
 # --------------------------------------------------
 st.set_page_config(
-    page_title="Legal Rights",
-    page_icon="⚖️",
+    page_title="Risk Analysis",
+    page_icon="⚠️",
     layout="wide"
 )
 
-st.title("⚖️ Legal Rights Analysis")
+st.title("⚠️ Risk Analysis")
 
 st.markdown("---")
 
 # --------------------------------------------------
-# Document Details
+# Document Information
 # --------------------------------------------------
-st.write("### Uploaded Document")
+st.subheader("Uploaded Document")
 
 st.write("**File Name:**", st.session_state.uploaded_file)
 
@@ -57,26 +57,49 @@ st.write("**Language:**", st.session_state.language)
 st.markdown("---")
 
 # --------------------------------------------------
-# Rights Analysis
+# Risk Analysis
 # --------------------------------------------------
-if st.button("Identify Legal Rights"):
+if st.button("Analyze Risks"):
 
-    with st.spinner("Analyzing legal rights..."):
+    with st.spinner("Finding risky clauses..."):
 
-        rights = get_rights(
+        risks = flag_risks(
             st.session_state.document_text
         )
 
-        st.session_state.rights = rights
+        st.session_state.risks = risks
 
 # --------------------------------------------------
-# Display Rights
+# Display Risks
 # --------------------------------------------------
-if "rights" in st.session_state:
+if "risks" in st.session_state:
 
-    st.subheader("Legal Rights")
+    st.subheader("Risk Report")
 
-    st.success(st.session_state.rights)
+    st.warning(st.session_state.risks)
+
+st.markdown("---")
+
+# --------------------------------------------------
+# Risk Level
+# --------------------------------------------------
+if "risks" in st.session_state:
+
+    st.subheader("Risk Level")
+
+    risk_text = st.session_state.risks.lower()
+
+    if "high" in risk_text:
+
+        st.error("🔴 High Risk")
+
+    elif "medium" in risk_text:
+
+        st.warning("🟠 Medium Risk")
+
+    else:
+
+        st.success("🟢 Low Risk")
 
 st.markdown("---")
 
@@ -87,12 +110,12 @@ col1, col2 = st.columns(2)
 
 with col1:
 
-    if st.button("⬅ Back to FAQ"):
+    if st.button("⬅ Back to Rights"):
 
-        st.switch_page("pages/faq.py")
+        st.switch_page("pages/rights.py")
 
 with col2:
 
-    if st.button("Next ➜ Risk Analysis"):
+    if st.button("Next ➜ Recommendations"):
 
-        st.switch_page("pages/risk.py")
+        st.switch_page("pages/next_steps.py")

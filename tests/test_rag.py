@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from rag.pdf_loader import extract_text
-from rag.chunker import split_text_into_chunks
+from rag.chunker import chunk_document        # Fixed: was split_text_into_chunks
 from rag.retriever import retrieve
 
 
@@ -25,20 +25,27 @@ def test_pdf_loader():
 
 
 def test_chunker():
-    sample_text = """
-    This is a sample legal document.
-    The tenant shall pay rent before the 5th day of every month.
-    A security deposit of Rs. 20,000 shall be paid.
-    """ * 10
+    # chunk_document expects the full document dict
+    sample_document = {
+        "filename": "sample.pdf",
+        "text": "This is a sample legal document. " * 50,
+        "language": "English",
+        "document_type": "Rental Agreement",
+        "clauses": [
+            "The tenant shall pay rent before the 5th day of every month.",
+            "A security deposit of Rs. 20,000 shall be paid.",
+            "The landlord may terminate with 30 days notice."
+        ]
+    }
 
-    chunks = split_text_into_chunks(sample_text)
+    chunks = chunk_document(sample_document)
 
     assert isinstance(chunks, list)
     assert len(chunks) > 0
 
     print("\nChunker Test Passed")
     print("Number of chunks:", len(chunks))
-    print("First chunk preview:", chunks[0][:200])
+    print("First chunk preview:", chunks[0].page_content[:200])
 
 
 def test_retriever():
@@ -55,10 +62,7 @@ def test_retriever():
 
         for i, doc in enumerate(results[:2], start=1):
             print(f"\nResult {i}:")
-            if hasattr(doc, "page_content"):
-                print(doc.page_content[:300])
-            else:
-                print(str(doc)[:300])
+            print(doc.page_content[:300])
 
     except Exception as e:
         print("\nRetriever Test Failed")
@@ -72,4 +76,4 @@ if __name__ == "__main__":
     test_chunker()
     test_retriever()
 
-    print("\nAll RAG tests completed successfully.")
+    print("\nAll RAG tests completed.")

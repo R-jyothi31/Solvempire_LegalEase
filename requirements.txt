@@ -7,3 +7,5 @@ pymupdf
 streamlit
 python-dotenv
 langchain-openai
+langdetect
+deep-translator

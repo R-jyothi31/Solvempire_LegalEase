@@ -1,36 +1,121 @@
-class RiskFlaggingAgent:
-    def __init__(self):
-        pass
+from rag.retriever import retrieve
+from llm.gemini_llm import llm
 
-    def detect_risk(self, clause, document_type="General Legal Document"):
-        clause_lower = clause.lower()
-        risks = []
 
-        if document_type == "Consumer Rights / Consumer Law":
-            # Consumer law gazette documents are usually procedural, not contract-risk documents
-            if "penalty" in clause_lower:
-                risks.append("This clause mentions a penalty or legal consequence.")
-            if "appeal" in clause_lower or "अपील" in clause_lower:
-                risks.append("This clause may affect appeal rights, procedure, or limitation period.")
-            if not risks:
-                risks.append("This appears to be an informational/procedural consumer law clause, not a risky private contract clause.")
-            return risks
+def flag_risks(clause):
+    """
+    Identify risks in a legal clause using RAG.
+    """
 
-        # Rental / employment / notice risk detection
-        if "non-refundable" in clause_lower:
-            risks.append("This clause may cause financial loss because the amount is non-refundable.")
-        if "terminate without notice" in clause_lower:
-            risks.append("This clause allows termination without notice.")
-        if "penalty" in clause_lower:
-            risks.append("This clause contains penalty terms.")
-        if "deduct" in clause_lower or "deduction" in clause_lower:
-            risks.append("This clause allows deductions.")
-        if "confidentiality" in clause_lower:
-            risks.append("This clause imposes confidentiality obligations.")
-        if "eviction" in clause_lower:
-            risks.append("This clause may affect possession or eviction rights.")
+    docs = retrieve(clause, k=4)
 
-        if not risks:
-            risks.append("No major risk keywords detected, but review is still recommended.")
+    context = "\n\n".join(
+        [doc.page_content for doc in docs]
+    )
 
-        return risks
+    prompt = f"""
+You are an AI Legal Risk Analyst.
+
+Use ONLY the legal context provided below.
+
+Context:
+{context}
+
+Clause:
+{clause}
+
+Tasks:
+
+1. Identify any risky or unfair terms.
+2. Highlight one-sided obligations.
+3. Flag vague or ambiguous language.
+4. Mention penalty or liability risks.
+5. Give a risk level: Low / Medium / High.
+
+Return in this format:
+
+Risk Level:
+...
+
+Risky Terms:
+- ...
+
+One-Sided Obligations:
+- ...
+
+Vague Language:
+- ...
+
+Penalty / Liability Risks:
+- ...
+
+Recommendation:
+...
+"""
+
+    try:
+        response = llm.invoke(prompt)
+        return response.content
+
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+
+def flag_all_clauses(clauses):
+    """
+    Flag risks across all clauses.
+    """
+
+    results = []
+
+    for i, clause in enumerate(clauses):
+
+        result = flag_risks(clause)
+
+        results.append({
+            "clause_number": i + 1,
+            "clause": clause,
+            "risks": result
+        })
+
+    return results
+
+
+def overall_risk_summary(clauses):
+    """
+    Generate a high-level risk summary for the entire document.
+    """
+
+    combined = "\n\n".join(clauses)
+
+    docs = retrieve(combined, k=5)
+
+    context = "\n\n".join(
+        [doc.page_content for doc in docs]
+    )
+
+    prompt = f"""
+You are an AI Legal Risk Analyst.
+
+Analyze the following legal document and provide an overall risk assessment.
+
+Context:
+{context}
+
+Document Clauses:
+{combined}
+
+Include:
+
+- Overall Risk Level (Low / Medium / High)
+- Top 3 Risky Clauses
+- Major Red Flags
+- Recommendations
+"""
+
+    try:
+        response = llm.invoke(prompt)
+        return response.content
+
+    except Exception as e:
+        return f"Error: {str(e)}"

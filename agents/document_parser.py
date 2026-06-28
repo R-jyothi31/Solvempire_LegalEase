@@ -1,136 +1,149 @@
 import re
 
 
-class DocumentParserAgent:
-    def __init__(self):
-        pass
+DOCUMENT_TYPES = {
+    "Rental Agreement": [
+        "rent",
+        "tenant",
+        "landlord",
+        "lease",
+        "security deposit",
+        "premises",
+        "monthly rent",
+        "vacate"
+    ],
 
-    def clean_text(self, text):
-        if not text:
-            return ""
+    "Employment Contract": [
+        "employee",
+        "employer",
+        "salary",
+        "probation",
+        "working hours",
+        "termination",
+        "leave",
+        "joining"
+    ],
 
-        # remove extra spaces/newlines
-        text = text.replace("\r", " ")
-        text = re.sub(r"\n+", "\n", text)
-        text = re.sub(r"[ \t]+", " ", text)
-        return text.strip()
+    "Internship Agreement": [
+        "intern",
+        "internship",
+        "stipend",
+        "mentor",
+        "training",
+        "internship period"
+    ],
 
-    def detect_document_type(self, text):
-        text = self.clean_text(text).lower()
+    "Non Disclosure Agreement": [
+        "confidential",
+        "nda",
+        "non disclosure",
+        "confidential information",
+        "trade secret"
+    ],
 
-        # Consumer / complaint related
-        consumer_keywords = [
-            "consumer", "complaint", "consumer court",
-            "deficiency in service", "unfair trade practice",
-            "district commission", "state commission",
-            "national commission", "refund", "compensation"
-        ]
+    "Service Agreement": [
+        "service provider",
+        "client",
+        "services",
+        "payment",
+        "scope of work"
+    ],
 
-        # Rental related
-        rental_keywords = [
-            "rent", "tenant", "landlord", "lease",
-            "security deposit", "premises", "monthly rent",
-            "vacate", "rental agreement"
-        ]
+    "Legal Notice": [
+        "legal notice",
+        "hereby",
+        "called upon",
+        "cause of action",
+        "advocate",
+        "demand",
+        "notice"
+    ],
 
-        # Employment related
-        employment_keywords = [
-            "employee", "employer", "salary", "offer letter",
-            "employment", "job role", "termination",
-            "notice period", "company"
-        ]
+    "Consumer Complaint": [
+        "consumer",
+        "deficiency",
+        "complaint",
+        "refund",
+        "compensation",
+        "consumer protection"
+    ]
+}
 
-        # Legal notice related
-        notice_keywords = [
-            "legal notice", "notice", "demand notice",
-            "you are hereby called upon", "failure to comply",
-            "under instructions from my client"
-        ]
 
-        # score-based detection
-        scores = {
-            "Consumer Rights / Consumer Complaint": 0,
-            "Rental Agreement": 0,
-            "Employment Agreement": 0,
-            "Legal Notice": 0
-        }
+def detect_document_type(filename, text):
+    """
+    Detect document type using filename + document content.
+    """
 
-        for word in consumer_keywords:
-            if word in text:
-                scores["Consumer Rights / Consumer Complaint"] += 1
+    filename = filename.lower()
+    text = text.lower()
 
-        for word in rental_keywords:
-            if word in text:
-                scores["Rental Agreement"] += 1
+    # ---------- Filename Detection ----------
 
-        for word in employment_keywords:
-            if word in text:
-                scores["Employment Agreement"] += 1
+    if "rental" in filename:
+        return "Rental Agreement"
 
-        for word in notice_keywords:
-            if word in text:
-                scores["Legal Notice"] += 1
+    if "lease" in filename:
+        return "Rental Agreement"
 
-        best_type = max(scores, key=scores.get)
+    if "employment" in filename:
+        return "Employment Contract"
 
-        if scores[best_type] == 0:
-            return "General Legal Document"
+    if "internship" in filename:
+        return "Internship Agreement"
 
-        return best_type
+    if "nda" in filename:
+        return "Non Disclosure Agreement"
 
-    def extract_clauses(self, text):
-        """
-        Extract readable clauses/sections from uploaded legal text.
-        Works for:
-        - numbered clauses
-        - headings
-        - complaint format paragraphs
-        - normal agreement paragraphs
-        """
-        text = self.clean_text(text)
+    if "service" in filename:
+        return "Service Agreement"
 
-        if not text:
-            return []
+    if "notice" in filename:
+        return "Legal Notice"
 
-        # Split into paragraphs by blank lines or long newlines
-        raw_parts = re.split(r"\n\s*\n|\n(?=[A-Z0-9][A-Za-z0-9 ,\-\(\)]{3,50}:?)", text)
+    if "consumer" in filename:
+        return "Consumer Complaint"
 
-        cleaned_parts = []
-        for part in raw_parts:
-            part = part.strip()
+    # ---------- Content Detection ----------
 
-            # remove tiny useless fragments
-            if len(part) < 40:
-                continue
+    scores = {}
 
-            # remove too much spacing
-            part = re.sub(r"\s+", " ", part)
+    for doc_type, keywords in DOCUMENT_TYPES.items():
 
-            cleaned_parts.append(part)
+        score = 0
 
-        # If not enough clauses found, fallback by sentence grouping
-        if len(cleaned_parts) == 0:
-            sentences = re.split(r"(?<=[.!?])\s+", text)
-            temp = []
-            chunk = ""
+        for word in keywords:
 
-            for sentence in sentences:
-                if len(chunk) + len(sentence) < 350:
-                    chunk += " " + sentence
-                else:
-                    if len(chunk.strip()) > 40:
-                        temp.append(chunk.strip())
-                    chunk = sentence
+            score += len(re.findall(word, text))
 
-            if len(chunk.strip()) > 40:
-                temp.append(chunk.strip())
+        scores[doc_type] = score
 
-            cleaned_parts = temp
+    best_match = max(scores, key=scores.get)
 
-        # Make clauses short and understandable
-        final_clauses = []
-        for part in cleaned_parts[:8]:
-            short_part = part[:500].strip()
-            final_clauses.append(short_part)
+    if scores[best_match] == 0:
+        return "Unknown Document"
 
-        return final_clauses
+    return best_match
+
+
+def document_summary(filename, text):
+    """
+    Basic summary for preview.
+    """
+
+    words = text.split()
+
+    summary = " ".join(words[:120])
+
+    return summary + "..."
+
+
+def document_statistics(text):
+
+    stats = {
+        "Characters": len(text),
+        "Words": len(text.split()),
+        "Lines": len(text.split("\n"))
+    }
+
+    return stats

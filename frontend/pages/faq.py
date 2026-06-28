@@ -1,40 +1,130 @@
 import streamlit as st
-from utils import answer_faq_question
+import os
+import sys
 
-st.title("FAQ Section")
-st.write("Ask questions about the uploaded legal document.")
+# ----------------------------------------------------
+# Add Project Root
+# ----------------------------------------------------
+BASE_DIR = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        "../.."
+    )
+)
 
-analysis_result = st.session_state.get("analysis_result")
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
 
-if not analysis_result:
-    st.warning("Please upload and analyze a document first.")
+# ----------------------------------------------------
+# Import RAG
+# ----------------------------------------------------
+from llm.rag_chain import ask_legal_question
+
+# ----------------------------------------------------
+# Check Session
+# ----------------------------------------------------
+if "analysis_complete" not in st.session_state:
+    st.session_state.analysis_complete = False
+
+if not st.session_state.analysis_complete:
+    st.warning("Please upload a document first.")
     st.stop()
 
-faq_options = [
-    "What type of document is this?",
-    "What is this document about?",
-    "What are the main points?",
-    "Are there any risky clauses?",
-    "Which laws apply?",
-    "What should I do next?"
-]
+# ----------------------------------------------------
+# Page Configuration
+# ----------------------------------------------------
+st.set_page_config(
+    page_title="Legal FAQ",
+    page_icon="❓",
+    layout="wide"
+)
 
-selected_faq = st.selectbox("Choose a FAQ", faq_options)
-
-if st.button("Get Answer"):
-    answer = answer_faq_question(selected_faq, analysis_result)
-    st.subheader("Answer")
-    st.write(answer)
+st.title("❓ Ask Questions About Your Document")
 
 st.markdown("---")
-st.subheader("Ask Your Own Question")
 
-custom_question = st.text_input("Type your question")
+st.write(
+    f"**Document:** {st.session_state.uploaded_file}"
+)
 
-if st.button("Ask Question"):
-    if custom_question.strip():
-        answer = answer_faq_question(custom_question, analysis_result)
-        st.subheader("Answer")
-        st.write(answer)
-    else:
+st.write(
+    f"**Document Type:** {st.session_state.document_type}"
+)
+
+st.write(
+    f"**Language:** {st.session_state.language}"
+)
+
+st.markdown("---")
+
+# ----------------------------------------------------
+# Question
+# ----------------------------------------------------
+question = st.text_input(
+    "Ask your legal question"
+)
+
+# ----------------------------------------------------
+# Answer
+# ----------------------------------------------------
+if st.button("Get Answer"):
+
+    if question.strip() == "":
         st.warning("Please enter a question.")
+
+    else:
+
+        with st.spinner("Searching legal document..."):
+
+            answer = ask_legal_question(
+                question,
+                filename=st.session_state.uploaded_file,
+                language=st.session_state.language,
+                document_type=st.session_state.document_type
+            )
+
+        st.markdown("## AI Answer")
+
+        st.success(answer)
+
+st.markdown("---")
+
+# ----------------------------------------------------
+# Sample Questions
+# ----------------------------------------------------
+st.subheader("Example Questions")
+
+st.info("""
+• Explain this agreement.
+
+• What are the tenant rights?
+
+• What are my responsibilities?
+
+• Explain Clause 5.
+
+• Are there any risky clauses?
+
+• What happens if I terminate the contract?
+
+• Summarize this document.
+""")
+
+st.markdown("---")
+
+# ----------------------------------------------------
+# Navigation
+# ----------------------------------------------------
+col1, col2 = st.columns(2)
+
+with col1:
+
+    if st.button("⬅ Back to Analysis"):
+
+        st.switch_page("pages/analysis.py")
+
+with col2:
+
+    if st.button("Next ➜ Rights"):
+
+        st.switch_page("pages/rights.py")

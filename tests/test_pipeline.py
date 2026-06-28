@@ -1,15 +1,16 @@
 import os
 import sys
 
-# Add project root to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from agents.legal_pipeline import LegalWorkflow
+from agents.clause_extractor import extract_clauses
+from agents.document_parser import detect_document_type
+from agents.explainer_agent import explain_clause
+from agents.risk_flagging_agent import flag_risks
+from agents.rights_law_agent import get_rights
 
 
 def test_pipeline():
-    workflow = LegalWorkflow()
-
     sample_text = """
     CONSUMER COMPLAINT
 
@@ -20,22 +21,22 @@ def test_pipeline():
     I want to know my rights and what action I can take.
     """
 
-    result = workflow.analyze_document(sample_text)
+    document_type = detect_document_type("consumer_complaint.pdf", sample_text)
+    clauses = extract_clauses(sample_text)
 
     print("\n===== PIPELINE TEST OUTPUT =====")
-    print("Document Type:", result.get("document_type", "Unknown"))
-    print("Number of Clauses:", len(result.get("analysis", [])))
+    print("Document Type:", document_type)
+    print("Number of Clauses:", len(clauses))
 
-    for i, item in enumerate(result.get("analysis", []), start=1):
+    for i, clause in enumerate(clauses, start=1):
         print(f"\n--- Clause {i} ---")
-        print("Clause:", item.get("clause", ""))
-        print("Laws:", item.get("laws", ""))
-        print("Explanation:", item.get("explanation", ""))
-        print("Risks:", item.get("risks", ""))
-        print("Next Steps:", item.get("next_steps", ""))
+        print("Clause:", clause[:200])
+        print("Explanation:", explain_clause(clause)[:200])
+        print("Risks:", flag_risks(clause)[:200])
+        print("Laws:", get_rights(clause)[:200])
 
 
 if __name__ == "__main__":
     print("Running Pipeline Test...")
     test_pipeline()
-    print("\nPipeline test completed successfully.")
+    print("\nPipeline test completed.")

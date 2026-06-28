@@ -1,39 +1,203 @@
-class NextStepsAgent:
-    def __init__(self):
-        pass
+from rag.retriever import retrieve
+from llm.gemini_llm import llm
 
-    def suggest_actions(self, document_type, clause, risks):
-        if document_type == "Consumer Rights / Consumer Complaint":
-            return [
-                "Check the issue mentioned in the complaint.",
-                "Collect bills, receipts, and proof related to the problem.",
-                "See whether refund, replacement, or compensation is being requested."
-            ]
 
-        elif document_type == "Rental Agreement":
-            return [
-                "Check rent, deposit, and notice period.",
-                "Ask about unclear clauses before signing.",
-                "Keep a signed copy of the agreement."
-            ]
+def suggest_next_steps(document):
+    """
+    Generate practical legal recommendations for the uploaded document.
 
-        elif document_type == "Employment Agreement":
-            return [
-                "Check salary, notice period, and job role.",
-                "Read termination and leave rules carefully.",
-                "Keep a signed copy of the contract."
-            ]
+    document = {
+        "filename": "...",
+        "document_type": "...",
+        "language": "...",
+        "clauses": [...]
+    }
+    """
+    if isinstance(document, dict):
 
-        elif document_type == "Legal Notice":
-            return [
-                "Read the notice carefully.",
-                "Collect documents related to the issue.",
-                "Respond within the deadline if required."
-            ]
+        document_type = document.get("document_type", "Unknown")
+        clauses = document.get("clauses", [])
 
+        if clauses:
+            context = "\n\n".join(clauses)
         else:
-            return [
-                "Read the clause carefully.",
-                "Check if it creates any legal duty or risk.",
-                "Take legal advice if the document is important."
-            ]
+            context = document.get("document_text", "")
+
+    else:
+        document_type = "Unknown"
+        context = str(document)
+
+    docs = retrieve(context, k=5)
+
+    legal_context = "\n\n".join(
+        doc.page_content for doc in docs
+    )
+
+
+
+    prompt = f"""
+You are an AI Legal Advisor.
+
+Document Type:
+{document_type}
+
+Document Clauses:
+{context}
+
+Legal Context:
+{legal_context}
+
+Based on the document,
+
+Provide:
+
+1. Overall Summary
+
+2. Recommended Next Steps
+
+3. Documents Required
+
+4. Precautions
+
+5. Legal Advice
+
+6. Government Authority (if applicable)
+
+7. Whether Lawyer Consultation is Recommended
+
+Return your answer in bullet points.
+"""
+
+    try:
+
+        response = llm.invoke(prompt)
+
+        answer = response.content
+
+        recommendations = []
+
+        for line in answer.split("\n"):
+
+            if line.strip():
+
+                recommendations.append(line.strip())
+
+        return recommendations
+
+    except Exception as e:
+
+        return [
+            f"Error: {str(e)}"
+        ]
+
+
+def generate_checklist(document):
+    """
+    Create a checklist for the uploaded document.
+    """
+
+    document_type = document.get("document_type", "")
+
+    checklist = [
+
+        "Read every clause carefully.",
+
+        "Verify names and dates.",
+
+        "Check payment terms.",
+
+        "Understand your legal rights.",
+
+        "Save a signed copy."
+    ]
+
+    if document_type == "Rental Agreement":
+
+        checklist.extend([
+
+            "Verify security deposit.",
+
+            "Confirm notice period.",
+
+            "Inspect property before signing."
+
+        ])
+
+    elif document_type == "Employment Contract":
+
+        checklist.extend([
+
+            "Check salary details.",
+
+            "Verify leave policy.",
+
+            "Read termination clause."
+
+        ])
+
+    elif document_type == "Legal Notice":
+
+        checklist.extend([
+
+            "Read allegations carefully.",
+
+            "Collect supporting evidence.",
+
+            "Respond within the prescribed time."
+
+        ])
+
+    elif document_type == "Consumer Complaint":
+
+        checklist.extend([
+
+            "Keep purchase receipts.",
+
+            "Maintain communication records.",
+
+            "Prepare supporting documents."
+
+        ])
+
+    return checklist
+
+
+def emergency_actions(document_type):
+    """
+    Show urgent actions for high-risk documents.
+    """
+
+    actions = {
+
+        "Rental Agreement": [
+            "Verify landlord ownership.",
+            "Do not pay cash without receipt.",
+            "Check eviction clause."
+        ],
+
+        "Employment Contract": [
+            "Review salary clause.",
+            "Check probation period.",
+            "Review termination policy."
+        ],
+
+        "Legal Notice": [
+            "Do not ignore the notice.",
+            "Reply within the deadline.",
+            "Consult a lawyer if necessary."
+        ],
+
+        "Consumer Complaint": [
+            "Collect invoices.",
+            "Keep warranty documents.",
+            "Contact consumer forum if required."
+        ]
+    }
+
+    return actions.get(
+        document_type,
+        [
+            "Read the document carefully.",
+            "Consult a legal expert if required."
+        ]
+    )
