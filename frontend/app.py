@@ -1,4 +1,12 @@
 import streamlit as st
+import os
+import sys
+
+BASE_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../..")
+)
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
 
 st.set_page_config(
     page_title="LegalEase",
@@ -6,52 +14,332 @@ st.set_page_config(
     layout="wide"
 )
 
-# ----------------------------
-# Initialize Session State
-# ----------------------------
-defaults = {
-    "analysis_complete": False,
-    "uploaded_file": None,
-    "file_path": "",          # Added: set by upload.py
-    "document_text": "",
-    "language": "",
-    "document_type": "",
-    "clauses": [],
-    "summary": "",
-    "rights": "",
-    "risks": "",
-    "next_steps": "",
-    "documents": []           # Added: upload.py stores all docs here
+# --------------------------------------------------
+# Load Global CSS
+# --------------------------------------------------
+css_path = os.path.join(BASE_DIR, "frontend", "assets", "style.css")
+if os.path.exists(css_path):
+    with open(css_path) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# --------------------------------------------------
+# Extra page-level styles (matching next_steps palette)
+# --------------------------------------------------
+st.markdown("""
+<style>
+/* ── Page title ── */
+h1 {
+    font-family: 'Playfair Display', serif;
+    color: #0D1B2A;
+}
+.page-subtitle {
+    color: #718096;
+    font-size: 0.95rem;
+    margin-top: 0.2rem;
 }
 
+/* ── Section strip header ── */
+.section-strip {
+    background: linear-gradient(90deg, #0D1B2A 0%, #1B2E42 100%);
+    color: #C9A84C;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* ── Meta card ── */
+.meta-card {
+    background: #FFFFFF;
+    border: 1px solid #E2DAC8;
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    box-shadow: 0 2px 10px rgba(13,27,42,0.06);
+}
+.meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid #F5EDD6;
+    font-size: 0.92rem;
+}
+.meta-row:last-child { border-bottom: none; }
+.meta-label {
+    color: #718096;
+    font-weight: 500;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.meta-value {
+    color: #0D1B2A;
+    font-weight: 600;
+    font-size: 0.92rem;
+}
+
+/* ── Feature cards grid ── */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+.feature-card {
+    background: #FFFFFF;
+    border: 1px solid #E2DAC8;
+    border-left: 5px solid #C9A84C;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    box-shadow: 0 2px 10px rgba(13,27,42,0.07);
+}
+.feature-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+.feature-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0D1B2A;
+    margin-bottom: 0.3rem;
+}
+.feature-desc {
+    font-size: 0.82rem;
+    color: #718096;
+    line-height: 1.55;
+}
+
+/* ── Workflow steps ── */
+.workflow-strip {
+    display: flex;
+    gap: 0;
+    margin: 0.5rem 0 1.5rem 0;
+}
+.workflow-step {
+    flex: 1;
+    background: #FFFFFF;
+    border: 1px solid #E2DAC8;
+    border-right: none;
+    padding: 0.9rem 1rem;
+    text-align: center;
+}
+.workflow-step:first-child { border-radius: 10px 0 0 10px; }
+.workflow-step:last-child  { border-radius: 0 10px 10px 0; border-right: 1px solid #E2DAC8; }
+.workflow-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: #C9A84C;
+    color: #0D1B2A;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+.workflow-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #0D1B2A;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+}
+
+/* ── rec-section / rec-point / rec-dot (shared) ── */
+.rec-section {
+    background: #FFFFFF;
+    border: 1px solid #E2DAC8;
+    border-left: 5px solid #C9A84C;
+    border-radius: 10px;
+    padding: 1.3rem 1.6rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 10px rgba(13,27,42,0.07);
+}
+.rec-section h4 {
+    font-family: 'Playfair Display', serif;
+    color: #0D1B2A;
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+}
+.rec-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid #F5EDD6;
+    color: #4A5568;
+    font-size: 0.93rem;
+    line-height: 1.65;
+}
+.rec-point:last-child { border-bottom: none; }
+.rec-dot {
+    min-width: 22px;
+    height: 22px;
+    background: #C9A84C;
+    color: #0D1B2A;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-top: 2px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# --------------------------------------------------
+# Initialize Session State
+# --------------------------------------------------
+defaults = {
+    "analysis_complete": False,
+    "uploaded_file":     None,
+    "file_path":         "",
+    "document_text":     "",
+    "language":          "",
+    "document_type":     "",
+    "clauses":           [],
+    "summary":           "",
+    "rights":            "",
+    "risks":             "",
+    "next_steps":        "",
+    "documents":         []
+}
 for key, value in defaults.items():
     if key not in st.session_state:
         st.session_state[key] = value
 
-# ----------------------------
-# Home Page
-# ----------------------------
-st.title("⚖️ LegalEase")
+# --------------------------------------------------
+# Page Title
+# --------------------------------------------------
+st.markdown("""
+<h1 style='margin-bottom:0'>⚖️ LegalEase</h1>
+<p class='page-subtitle'>AI-Powered Legal Document Assistant</p>
+""", unsafe_allow_html=True)
 
-st.subheader("AI-Powered Legal Document Assistant")
+st.markdown("---")
 
-st.write("""
-Welcome to **LegalEase**.
+# --------------------------------------------------
+# Workflow Steps
+# --------------------------------------------------
+st.markdown('<div class="section-strip">🗺️ How It Works</div>', unsafe_allow_html=True)
 
-This application helps you:
+st.markdown("""
+<div class="workflow-strip">
+    <div class="workflow-step">
+        <div class="workflow-num">1</div>
+        <span class="workflow-label">📄 Upload</span>
+    </div>
+    <div class="workflow-step">
+        <div class="workflow-num">2</div>
+        <span class="workflow-label">📑 Analysis</span>
+    </div>
+    <div class="workflow-step">
+        <div class="workflow-num">3</div>
+        <span class="workflow-label">❓ FAQ</span>
+    </div>
+    <div class="workflow-step">
+        <div class="workflow-num">4</div>
+        <span class="workflow-label">⚖️ Rights</span>
+    </div>
+    <div class="workflow-step">
+        <div class="workflow-num">5</div>
+        <span class="workflow-label">⚠️ Risks</span>
+    </div>
+    <div class="workflow-step">
+        <div class="workflow-num">6</div>
+        <span class="workflow-label">✅ Next Steps</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-- 📄 Upload legal documents
-- 🌍 Read documents in multiple languages
-- 📑 Extract clauses
-- ⚖️ Identify legal rights
-- ⚠️ Detect risky clauses
-- 💡 Generate legal recommendations
-""")
+# --------------------------------------------------
+# Feature Cards
+# --------------------------------------------------
+st.markdown('<div class="section-strip">✨ Features</div>', unsafe_allow_html=True)
 
-st.image(
-    "https://img.icons8.com/color/480/artificial-intelligence.png",
-    width=200
-)
+st.markdown("""
+<div class="feature-grid">
+    <div class="feature-card">
+        <div class="feature-icon">📄</div>
+        <div class="feature-title">Document Upload</div>
+        <div class="feature-desc">Upload legal PDF documents for instant AI-powered processing and text extraction.</div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <div class="feature-title">Multi-language</div>
+        <div class="feature-desc">Automatic language detection with support for documents in multiple languages.</div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">📑</div>
+        <div class="feature-title">Clause Extraction</div>
+        <div class="feature-desc">Automatically identifies and extracts individual clauses for detailed review.</div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">⚖️</div>
+        <div class="feature-title">Rights Identification</div>
+        <div class="feature-desc">AI identifies your legal rights and entitlements within the document.</div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">⚠️</div>
+        <div class="feature-title">Risk Detection</div>
+        <div class="feature-desc">Flags potentially risky clauses and assigns High / Medium / Low risk levels.</div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">💡</div>
+        <div class="feature-title">Recommendations</div>
+        <div class="feature-desc">AI-generated action plan with next steps, checklists, and urgent actions.</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-if st.button("🚀 Start Analysis"):
+# --------------------------------------------------
+# Supported Document Types
+# --------------------------------------------------
+st.markdown('<div class="section-strip">📁 Supported Document Types</div>', unsafe_allow_html=True)
+
+st.markdown("""
+<div class="meta-card" style="max-width:680px;">
+    <div class="meta-row">
+        <span class="meta-label">🏠 Rental / Lease</span>
+        <span class="meta-value">Tenancy agreements, lease deeds</span>
+    </div>
+    <div class="meta-row">
+        <span class="meta-label">💼 Employment</span>
+        <span class="meta-value">Offer letters, service agreements</span>
+    </div>
+    <div class="meta-row">
+        <span class="meta-label">🤝 Contracts</span>
+        <span class="meta-value">NDAs, vendor &amp; service contracts</span>
+    </div>
+    <div class="meta-row">
+        <span class="meta-label">🏛️ Legal Notices</span>
+        <span class="meta-value">Court notices, demand letters</span>
+    </div>
+    <div class="meta-row">
+        <span class="meta-label">🏦 Financial</span>
+        <span class="meta-value">Loan agreements, mortgage deeds</span>
+    </div>
+    <div class="meta-row">
+        <span class="meta-label">📋 General</span>
+        <span class="meta-value">Any legal or formal PDF document</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# --------------------------------------------------
+# CTA Button
+# --------------------------------------------------
+if st.button("🚀 Start Analysis", use_container_width=False):
     st.switch_page("pages/upload.py")
