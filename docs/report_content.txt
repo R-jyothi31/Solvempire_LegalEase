@@ -1,0 +1,64 @@
+PROJECT TITLE:
+LegalEase – AI Legal Document Assistant
+
+TEAM MEMBERS:
+1. Ravipati Jyothi
+2. Sri Vasavi Boddu
+3. Lakshmi Lavanya Kothalanka
+
+PROJECT ABSTRACT:
+LegalEase is an AI-powered legal document assistant that helps users understand legal documents such as consumer complaints, rental agreements, employment contracts, and legal notices in simple language. The system uses Retrieval-Augmented Generation (RAG) and multiple AI agents to extract clauses, retrieve legal rights, explain legal content, detect risks, and suggest next steps.
+
+PROBLEM STATEMENT:
+Many people sign agreements, receive notices, or handle consumer complaints without understanding legal language. LegalEase solves this by simplifying legal content into understandable English/Telugu and guiding users with legal rights and suggested actions.
+
+OBJECTIVES:
+1. Upload and analyze legal PDF documents
+2. Detect document type automatically
+3. Extract clauses from the document
+4. Retrieve relevant laws and legal rights
+5. Explain clauses in simple language
+6. Flag risky clauses
+7. Suggest next steps
+8. Support FAQ mode for user questions
+
+TECHNOLOGIES USED:
+- Python
+- Streamlit
+- LangChain
+- ChromaDB / FAISS
+- HuggingFace Embeddings
+- PyMuPDF
+- OpenAI / Gemini API
+
+MODULES:
+1. PDF Loader
+2. Chunking and Embedding Module
+3. Document Parser Agent
+4. Rights Agent
+5. Explainer Agent
+6. Risk Agent
+7. Next Steps Agent
+8. FAQ Agent
+9. Streamlit Frontend
+
+WORKFLOW:
+1. User uploads PDF
+2. Text extracted from PDF
+3. Document type identified
+4. Clauses extracted
+5. Legal rights retrieved
+6. Clauses simplified
+7. Risks flagged
+8. Next steps generated
+9. Output shown in frontend
+
+RESULT:
+LegalEase can analyze uploaded legal documents, identify clauses, explain them in simple language, retrieve related rights, and suggest what users should do next.
+
+FUTURE SCOPE:
+1. Telugu output improvement
+2. OCR for scanned legal documents
+3. Support for FIR and court notice analysis
+4. Lawyer consultation integration
+5. Legal chatbot for follow-up queries
