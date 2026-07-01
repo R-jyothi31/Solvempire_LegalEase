@@ -38,25 +38,25 @@ def upload_page():
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
     # --------------------------------------------------
-    # Extra page-level styles (next_steps palette)
+    # Extra page-level styles — Sky Blue / Blue palette
     # --------------------------------------------------
     st.markdown("""
 <style>
 /* ── Page title ── */
 h1 {
     font-family: 'Playfair Display', serif;
-    color: #0D1B2A;
+    color: #0B3D91;
 }
 .page-subtitle {
-    color: #718096;
+    color: black;
     font-size: 0.95rem;
     margin-top: 0.2rem;
 }
 
 /* ── Section strip header ── */
 .section-strip {
-    background: linear-gradient(90deg, #0D1B2A 0%, #1B2E42 100%);
-    color: #C9A84C;
+    background: linear-gradient(90deg, #0B3D91 0%, #1E88E5 100%);
+    color: white;
     border-radius: 8px;
     padding: 0.6rem 1.2rem;
     font-size: 0.78rem;
@@ -70,32 +70,111 @@ h1 {
 /* ── Summary panel (file list) ── */
 .summary-panel {
     background: #FFFFFF;
-    border: 1px solid #E2DAC8;
+    border: 1px solid #BBDEFB;
     border-radius: 10px;
     padding: 1.2rem 1.5rem;
-    box-shadow: 0 2px 10px rgba(13,27,42,0.06);
+    box-shadow: 0 2px 10px rgba(11,61,145,0.08);
 }
 .summary-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.42rem 0;
-    border-bottom: 1px solid #F5EDD6;
+    border-bottom: 1px solid #E3F2FD;
     font-size: 0.91rem;
-    color: #0D1B2A;
+    color: #0B3D91;
 }
 .summary-row:last-child { border-bottom: none; }
 .summary-key {
-    color: #718096;
+    color: #1565C0;
     font-weight: 500;
     font-size: 0.82rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 .meta-value {
-    color: #0D1B2A;
+    color: #0B3D91;
     font-weight: 600;
     font-size: 0.92rem;
+}
+
+/* ── Buttons (sky blue / blue) ── */
+.stButton > button {
+    background: #1E88E5 !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #1E88E5 !important;
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+}
+.stButton > button:hover {
+    background: #0B3D91 !important;
+    border-color: #0B3D91 !important;
+    color: #E3F2FD !important;
+}
+
+/* ── File uploader ── */
+[data-testid="stFileUploader"] {
+    background: #F5FAFF !important;
+    border: 2px dashed #64B5F6 !important;
+    border-radius: 16px !important;
+}
+[data-testid="stFileUploader"]:hover {
+    border-color: #1565C0 !important;
+}
+/* ── Buttons (sky blue / blue) ── */
+.stButton > button {
+    background: #1E88E5 !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #1E88E5 !important;
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+}
+.stButton > button:hover {
+    background: #0B3D91 !important;
+    border-color: #0B3D91 !important;
+    color: #E3F2FD !important;
+}
+
+/* ── Sidebar nav hover ── */
+section[data-testid="stSidebar"] li,
+section[data-testid="stSidebar"] a,
+[data-testid="stSidebarNav"] li,
+[data-testid="stSidebarNav"] a,
+[data-testid="stSidebarNavItems"] li,
+[data-testid="stSidebarNavItems"] a {
+    border-radius: 8px !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+}
+section[data-testid="stSidebar"] li:hover,
+section[data-testid="stSidebar"] a:hover,
+[data-testid="stSidebarNav"] li:hover,
+[data-testid="stSidebarNav"] a:hover,
+[data-testid="stSidebarNavItems"] li:hover,
+[data-testid="stSidebarNavItems"] a:hover {
+    background: #E3F2FD !important;
+    cursor: pointer !important;
+}
+section[data-testid="stSidebar"] li:hover *,
+section[data-testid="stSidebar"] a:hover *,
+[data-testid="stSidebarNav"] li:hover *,
+[data-testid="stSidebarNav"] a:hover *,
+[data-testid="stSidebarNavItems"] li:hover *,
+[data-testid="stSidebarNavItems"] a:hover * {
+    color: #0B3D91 !important;
+}
+section[data-testid="stSidebar"] a[aria-current="page"],
+[data-testid="stSidebarNav"] a[aria-current="page"],
+[data-testid="stSidebarNavItems"] a[aria-current="page"] {
+    background: #BBDEFB !important;
+}
+
+/* ── General hover (expanders, links) ── */
+[data-testid="stExpander"] summary:hover {
+    background: #E3F2FD !important;
+    color: #1E88E5 !important;
+}
+a:hover {
+    color: #0B3D91 !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -124,8 +203,9 @@ h1 {
         f'<div class="summary-row"><span class="summary-key">Files selected</span>'
         f'<span>{len(uploaded_files)}</span></div>'
         + "".join(
-            f'<div class="summary-row"><span class="summary-key">📎</span>'
-            f'<span class="meta-value">{f.name}</span></div>'
+            f'<div class="summary-row" style="justify-content:flex-start;gap:0.6rem;">'
+            f'<span class="summary-key">📎</span>'
+            f'<span class="meta-value" style="text-align:left;">{f.name}</span></div>'
             for f in uploaded_files
         )
         + '</div>',

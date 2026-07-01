@@ -30,18 +30,18 @@ st.markdown("""
 /* ── Page title ── */
 h1 {
     font-family: 'Playfair Display', serif;
-    color: #0D1B2A;
+    color: #0B3D91;
 }
 .page-subtitle {
-    color: #718096;
+    color: black;
     font-size: 0.95rem;
     margin-top: 0.2rem;
 }
 
 /* ── Section strip header ── */
 .section-strip {
-    background: linear-gradient(90deg, #0D1B2A 0%, #1B2E42 100%);
-    color: #C9A84C;
+    background: linear-gradient(90deg, #0B3D91 0%, #1E88E5 100%);
+    color: white;
     border-radius: 8px;
     padding: 0.6rem 1.2rem;
     font-size: 0.78rem;
@@ -55,29 +55,29 @@ h1 {
 /* ── Meta card ── */
 .meta-card {
     background: #FFFFFF;
-    border: 1px solid #E2DAC8;
+    border: 1px solid #BBDEFB;
     border-radius: 10px;
     padding: 1.2rem 1.5rem;
-    box-shadow: 0 2px 10px rgba(13,27,42,0.06);
+    box-shadow: 0 2px 10px rgba(11,61,145,0.08);
 }
 .meta-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.45rem 0;
-    border-bottom: 1px solid #F5EDD6;
+    border-bottom: 1px solid #E3F2FD;
     font-size: 0.92rem;
 }
 .meta-row:last-child { border-bottom: none; }
 .meta-label {
-    color: #718096;
+    color: black;
     font-weight: 500;
     font-size: 0.82rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 .meta-value {
-    color: #0D1B2A;
+    color: black;
     font-weight: 600;
     font-size: 0.92rem;
 }
@@ -92,11 +92,18 @@ h1 {
 }
 .feature-card {
     background: #FFFFFF;
-    border: 1px solid #E2DAC8;
-    border-left: 5px solid #C9A84C;
+    border: 1px solid #BBDEFB;
+    border-left: 5px solid #1E88E5;
     border-radius: 10px;
     padding: 1.2rem 1.4rem;
-    box-shadow: 0 2px 10px rgba(13,27,42,0.07);
+    box-shadow: 0 2px 10px rgba(11,61,145,0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.feature-card:hover {
+    background: #F5FAFF;
+    border-color: #1E88E5;
+    box-shadow: 0 6px 16px rgba(11,61,145,0.18);
+    transform: translateY(-3px);
 }
 .feature-icon {
     font-size: 1.5rem;
@@ -106,12 +113,12 @@ h1 {
     font-family: 'Playfair Display', serif;
     font-size: 0.95rem;
     font-weight: 700;
-    color: #0D1B2A;
+    color: black;
     margin-bottom: 0.3rem;
 }
 .feature-desc {
     font-size: 0.82rem;
-    color: #718096;
+    color: black;
     line-height: 1.55;
 }
 
@@ -124,21 +131,21 @@ h1 {
 .workflow-step {
     flex: 1;
     background: #FFFFFF;
-    border: 1px solid #E2DAC8;
+    border: 1px solid #BBDEFB;
     border-right: none;
     padding: 0.9rem 1rem;
     text-align: center;
 }
 .workflow-step:first-child { border-radius: 10px 0 0 10px; }
-.workflow-step:last-child  { border-radius: 0 10px 10px 0; border-right: 1px solid #E2DAC8; }
+.workflow-step:last-child  { border-radius: 0 10px 10px 0; border-right: 1px solid #BBDEFB; }
 .workflow-num {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 26px;
     height: 26px;
-    background: #C9A84C;
-    color: #0D1B2A;
+    background: #1E88E5;
+    color: #FFFFFF;
     border-radius: 50%;
     font-size: 0.75rem;
     font-weight: 700;
@@ -147,7 +154,7 @@ h1 {
 .workflow-label {
     font-size: 0.78rem;
     font-weight: 600;
-    color: #0D1B2A;
+    color: #0B3D91;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     display: block;
@@ -156,8 +163,8 @@ h1 {
 /* ── rec-section / rec-point / rec-dot (shared) ── */
 .rec-section {
     background: #FFFFFF;
-    border: 1px solid #E2DAC8;
-    border-left: 5px solid #C9A84C;
+    border: 1px solid #BBDEFB;
+    border-left: 5px solid #1E88E5;
     border-radius: 10px;
     padding: 1.3rem 1.6rem;
     margin-bottom: 1rem;
@@ -165,7 +172,7 @@ h1 {
 }
 .rec-section h4 {
     font-family: 'Playfair Display', serif;
-    color: #0D1B2A;
+    color: #0B3D91;
     font-size: 1rem;
     margin-bottom: 0.6rem;
     font-weight: 600;
@@ -175,8 +182,8 @@ h1 {
     align-items: flex-start;
     gap: 0.6rem;
     padding: 0.45rem 0;
-    border-bottom: 1px solid #F5EDD6;
-    color: #4A5568;
+    border-bottom: 1px solid #E3F2FD;
+    color: black;
     font-size: 0.93rem;
     line-height: 1.65;
 }
@@ -184,8 +191,8 @@ h1 {
 .rec-dot {
     min-width: 22px;
     height: 22px;
-    background: #C9A84C;
-    color: #0D1B2A;
+    background: #1E88E5;
+    color: #FFFFFF;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -193,6 +200,62 @@ h1 {
     font-size: 0.72rem;
     font-weight: 700;
     margin-top: 2px;
+}
+
+/* ── Buttons (sky blue / blue) ── */
+.stButton > button {
+    background: #1E88E5 !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #1E88E5 !important;
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+}
+.stButton > button:hover {
+    background: #0B3D91 !important;
+    border-color: #0B3D91 !important;
+    color: #E3F2FD !important;
+}
+
+/* ── Sidebar nav hover ── */
+section[data-testid="stSidebar"] li,
+section[data-testid="stSidebar"] a,
+[data-testid="stSidebarNav"] li,
+[data-testid="stSidebarNav"] a,
+[data-testid="stSidebarNavItems"] li,
+[data-testid="stSidebarNavItems"] a {
+    border-radius: 8px !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+}
+section[data-testid="stSidebar"] li:hover,
+section[data-testid="stSidebar"] a:hover,
+[data-testid="stSidebarNav"] li:hover,
+[data-testid="stSidebarNav"] a:hover,
+[data-testid="stSidebarNavItems"] li:hover,
+[data-testid="stSidebarNavItems"] a:hover {
+    background: #E3F2FD !important;
+    cursor: pointer !important;
+}
+section[data-testid="stSidebar"] li:hover *,
+section[data-testid="stSidebar"] a:hover *,
+[data-testid="stSidebarNav"] li:hover *,
+[data-testid="stSidebarNav"] a:hover *,
+[data-testid="stSidebarNavItems"] li:hover *,
+[data-testid="stSidebarNavItems"] a:hover * {
+    color: #0B3D91 !important;
+}
+section[data-testid="stSidebar"] a[aria-current="page"],
+[data-testid="stSidebarNav"] a[aria-current="page"],
+[data-testid="stSidebarNavItems"] a[aria-current="page"] {
+    background: #BBDEFB !important;
+}
+
+/* ── General hover (expanders, links) ── */
+[data-testid="stExpander"] summary:hover {
+    background: #E3F2FD !important;
+    color: #1E88E5 !important;
+}
+a:hover {
+    color: #0B3D91 !important;
 }
 </style>
 """, unsafe_allow_html=True)

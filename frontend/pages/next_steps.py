@@ -39,8 +39,8 @@ st.markdown("""
 <style>
 .rec-section {
     background: #FFFFFF;
-    border: 1px solid #E2DAC8;
-    border-left: 5px solid #C9A84C;
+    border: 1px solid #BBDEFB;
+    border-left: 5px solid #1E88E5;
     border-radius: 10px;
     padding: 1.3rem 1.6rem;
     margin-bottom: 1rem;
@@ -48,7 +48,7 @@ st.markdown("""
 }
 .rec-section h4 {
     font-family: 'Playfair Display', serif;
-    color: #0D1B2A;
+    color: #0B3D91;
     font-size: 1rem;
     margin-bottom: 0.6rem;
     font-weight: 600;
@@ -58,7 +58,7 @@ st.markdown("""
     align-items: flex-start;
     gap: 0.6rem;
     padding: 0.45rem 0;
-    border-bottom: 1px solid #F5EDD6;
+    border-bottom: 1px solid #E3F2FD;
     color: #4A5568;
     font-size: 0.93rem;
     line-height: 1.65;
@@ -69,8 +69,8 @@ st.markdown("""
 .rec-dot {
     min-width: 22px;
     height: 22px;
-    background: #C9A84C;
-    color: #0D1B2A;
+    background: #1E88E5;
+    color: #FFFFFF;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -80,8 +80,8 @@ st.markdown("""
     margin-top: 2px;
 }
 .section-header-strip {
-    background: linear-gradient(90deg, #0D1B2A 0%, #1B2E42 100%);
-    color: #C9A84C;
+    background: linear-gradient(90deg, #0B3D91 0%, #1E88E5 100%);
+    color: white;
     border-radius: 8px;
     padding: 0.6rem 1.2rem;
     font-size: 0.78rem;
@@ -93,7 +93,7 @@ st.markdown("""
 }
 .doc-meta-card {
     background: #FFFFFF;
-    border: 1px solid #E2DAC8;
+    border: 1px solid #BBDEFB;
     border-radius: 10px;
     padding: 1.2rem 1.5rem;
     box-shadow: 0 2px 10px rgba(13,27,42,0.06);
@@ -103,7 +103,7 @@ st.markdown("""
     justify-content: space-between;
     align-items: center;
     padding: 0.45rem 0;
-    border-bottom: 1px solid #F5EDD6;
+    border-bottom: 1px solid #E3F2FD;
     font-size: 0.92rem;
 }
 .doc-meta-row:last-child { border-bottom: none; }
@@ -115,14 +115,14 @@ st.markdown("""
     letter-spacing: 0.05em;
 }
 .doc-meta-value {
-    color: #0D1B2A;
+    color: #0B3D91;
     font-weight: 600;
     font-size: 0.92rem;
 }
 .badge-doctype {
-    background: #F5EDD6;
-    color: #0D1B2A;
-    border: 1px solid #C9A84C;
+    background: #E3F2FD;
+    color: #0B3D91;
+    border: 1px solid #1E88E5;
     border-radius: 99px;
     font-size: 0.78rem;
     font-weight: 600;
@@ -135,7 +135,7 @@ st.markdown("""
     padding: 0.5rem 0;
     color: #4A5568;
     font-size: 0.93rem;
-    border-bottom: 1px solid #F5EDD6;
+    border-bottom: 1px solid #E3F2FD;
 }
 .checklist-item:last-child { border-bottom: none; }
 .check-icon {
@@ -147,6 +147,75 @@ st.markdown("""
     display: flex;
     gap: 1rem;
     margin-top: 2rem;
+}
+
+/* ── Buttons (sky blue / blue) ── */
+.stButton > button {
+    background: #1E88E5 !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #1E88E5 !important;
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+}
+.stButton > button:hover {
+    background: #0B3D91 !important;
+    border-color: #0B3D91 !important;
+    color: #E3F2FD !important;
+}
+/* ── Buttons (sky blue / blue) ── */
+.stButton > button {
+    background: #1E88E5 !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #1E88E5 !important;
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+}
+.stButton > button:hover {
+    background: #0B3D91 !important;
+    border-color: #0B3D91 !important;
+    color: #E3F2FD !important;
+}
+
+/* ── Sidebar nav hover ── */
+section[data-testid="stSidebar"] li,
+section[data-testid="stSidebar"] a,
+[data-testid="stSidebarNav"] li,
+[data-testid="stSidebarNav"] a,
+[data-testid="stSidebarNavItems"] li,
+[data-testid="stSidebarNavItems"] a {
+    border-radius: 8px !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+}
+section[data-testid="stSidebar"] li:hover,
+section[data-testid="stSidebar"] a:hover,
+[data-testid="stSidebarNav"] li:hover,
+[data-testid="stSidebarNav"] a:hover,
+[data-testid="stSidebarNavItems"] li:hover,
+[data-testid="stSidebarNavItems"] a:hover {
+    background: #E3F2FD !important;
+    cursor: pointer !important;
+}
+section[data-testid="stSidebar"] li:hover *,
+section[data-testid="stSidebar"] a:hover *,
+[data-testid="stSidebarNav"] li:hover *,
+[data-testid="stSidebarNav"] a:hover *,
+[data-testid="stSidebarNavItems"] li:hover *,
+[data-testid="stSidebarNavItems"] a:hover * {
+    color: #0B3D91 !important;
+}
+section[data-testid="stSidebar"] a[aria-current="page"],
+[data-testid="stSidebarNav"] a[aria-current="page"],
+[data-testid="stSidebarNavItems"] a[aria-current="page"] {
+    background: #BBDEFB !important;
+}
+
+/* ── General hover (expanders, links) ── */
+[data-testid="stExpander"] summary:hover {
+    background: #E3F2FD !important;
+    color: #1E88E5 !important;
+}
+a:hover {
+    color: #0B3D91 !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -338,7 +407,7 @@ if st.session_state.get("next_steps"):
 
 else:
     st.markdown("""
-    <div style='background:#F5EDD6;border:1px solid #C9A84C;border-radius:10px;
+    <div style='background:#E3F2FD;border:1px solid #1E88E5;border-radius:10px;
                 padding:1.2rem 1.5rem;color:#4A5568;font-size:0.95rem;text-align:center;'>
         Click <strong>Generate AI Recommendations</strong> above to get your personalized legal action plan.
     </div>
