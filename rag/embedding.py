@@ -1,4 +1,5 @@
 import os
+import tempfile
 
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -10,11 +11,21 @@ from langchain_huggingface import HuggingFaceEmbeddings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# IMPORTANT: On Streamlit Community Cloud, the repo is mounted read-only
+# at /mount/src/<repo>/. A path built from BASE_DIR (inside the repo)
+# fails with "attempt to write a readonly database".
+#
+# tempfile.gettempdir() resolves to a writable location both locally
+# (your OS temp dir) and on Streamlit Cloud (/tmp).
+#
+# NOTE: This storage is EPHEMERAL — wiped on app restart/sleep/redeploy.
+# That's fine for this app's flow since each session re-uploads and
+# re-embeds its own document.
 VECTOR_DB_PATH = os.path.join(
-    BASE_DIR,
-    "vector_store",
-    "chromadb"
+    tempfile.gettempdir(),
+    "legalease_chromadb"
 )
+os.makedirs(VECTOR_DB_PATH, exist_ok=True)
 
 
 # -----------------------------
