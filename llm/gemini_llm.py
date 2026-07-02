@@ -9,7 +9,11 @@ NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY")
 
 if not NVIDIA_API_KEY:
     raise ValueError(
-        "NVIDIA_API_KEY not found in .env file."
+        "NVIDIA_API_KEY not found in .env file. "
+        "Set NVIDIA_API_KEY in your .env (or environment/secrets) before "
+        "starting the app — without it, every page that imports this "
+        "module will crash on startup rather than failing gracefully "
+        "per-request."
     )
 
 llm = ChatOpenAI(
