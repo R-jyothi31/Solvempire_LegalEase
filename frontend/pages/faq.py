@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import re
 import sys
 
 # ----------------------------------------------------
@@ -12,9 +13,13 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 # ----------------------------------------------------
-# Import RAG
+# Import RAG (kept as optional / best-effort — see fallback below)
 # ----------------------------------------------------
-from llm.rag_chain import ask_legal_question
+try:
+    from llm.rag_chain import ask_legal_question as rag_ask_legal_question
+    RAG_AVAILABLE = True
+except Exception:
+    RAG_AVAILABLE = False
 
 # ----------------------------------------------------
 # Check Session
@@ -162,20 +167,10 @@ st.markdown("""
     font-weight: 700;
     margin-top: 2px;
 }
+.rec-dot.risk-high { background: #E74C3C; }
+.rec-dot.risk-medium { background: #F1C40F; color: #4A3300; }
+.rec-dot.risk-low { background: #2ECC71; }
 
-/* ── Buttons (sky blue / blue) ── */
-.stButton > button {
-    background: #1E88E5 !important;
-    color: #FFFFFF !important;
-    border: 1.5px solid #1E88E5 !important;
-    border-radius: 10px !important;
-    font-weight: 500 !important;
-}
-.stButton > button:hover {
-    background: #0B3D91 !important;
-    border-color: #0B3D91 !important;
-    color: #E3F2FD !important;
-}
 /* ── Buttons (sky blue / blue) ── */
 .stButton > button {
     background: #1E88E5 !important;
@@ -235,6 +230,192 @@ a:hover {
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------
+# Local answer engine (fallback / primary — no external RAG dependency)
+# ----------------------------------------------------
+RISK_KEYWORDS = {
+    "high": [
+        "penalty", "penalties", "terminate", "termination", "forfeit",
+        "indemnify", "indemnification", "liquidated damages", "breach",
+        "non-refundable", "waive", "waiver", "sole discretion",
+        "irrevocable", "without notice", "automatically renew"
+    ],
+    "medium": [
+        "late fee", "interest", "notice period", "governing law",
+        "jurisdiction", "confidential", "non-compete", "exclusive",
+        "arbitration", "dispute"
+    ],
+    "low": [
+        "effective date", "definitions", "signature", "counterpart",
+        "entire agreement", "severability"
+    ],
+}
+
+RIGHTS_KEYWORDS = [
+    "entitled to", "may", "has the right to", "reserves the right",
+    "peaceful and lawful possession", "refund", "shall be refunded"
+]
+
+RESPONSIBILITY_KEYWORDS = [
+    "shall", "must", "is required to", "agrees to",
+    "responsible for", "shall pay", "shall not"
+]
+
+TERMINATION_KEYWORDS = [
+    "terminate", "termination", "expire", "expiry", "notice period",
+    "vacate", "vacation", "early termination"
+]
+
+
+def classify_clause_risk(clause_text: str) -> str:
+    text_lower = clause_text.lower()
+    for level in ("high", "medium", "low"):
+        for kw in RISK_KEYWORDS[level]:
+            if kw in text_lower:
+                return level
+    return "low"
+
+
+def _keyword_score(text: str, keywords: list) -> int:
+    text_lower = text.lower()
+    return sum(text_lower.count(kw) for kw in keywords)
+
+
+def _clean(text: str) -> str:
+    return re.sub(r'\s+', ' ', text).strip()
+
+
+def local_answer_legal_question(question: str, document_text: str, clauses: list) -> str:
+    """Rule-based fallback that always answers from what's actually in the
+    document, instead of relying on an external / unavailable RAG chain."""
+    q_lower = question.lower().strip()
+
+    # -------- "Explain Clause N" --------
+    clause_num_match = re.search(r'clause\s*(\d+)', q_lower)
+    if clause_num_match:
+        idx = int(clause_num_match.group(1))
+        if clauses and 1 <= idx <= len(clauses):
+            return f"<strong>Clause {idx}:</strong><br>{_clean(clauses[idx - 1])}"
+        return f"I couldn't find Clause {idx} — this document only has {len(clauses)} extracted clause(s)."
+
+    # -------- Risky clauses --------
+    if any(w in q_lower for w in ["risky", "risk", "dangerous", "unfair", "concerning"]):
+        if not clauses:
+            return "No clauses were extracted from this document to assess for risk."
+        risky = [(i, c) for i, c in enumerate(clauses, start=1) if classify_clause_risk(c) in ("high", "medium")]
+        if not risky:
+            return "Based on keyword analysis, no clauses in this document were flagged as high or medium risk."
+        lines = "".join(
+            f"<div class='rec-point'><div class='rec-dot risk-{classify_clause_risk(c)}'>{i}</div>"
+            f"<div><strong>Clause {i}</strong> ({classify_clause_risk(c).upper()} risk): {_clean(c)[:220]}...</div></div>"
+            for i, c in risky
+        )
+        return f"I found <strong>{len(risky)}</strong> clause(s) worth reviewing carefully:<br>{lines}"
+
+    # -------- Rights --------
+    if "right" in q_lower:
+        hits = [c for c in clauses if _keyword_score(c, RIGHTS_KEYWORDS) > 0]
+        if not hits:
+            return "I couldn't find explicit rights-related language (e.g. 'entitled to', 'may', 'right to') in the extracted clauses."
+        lines = "".join(
+            f"<div class='rec-point'><div class='rec-dot'>{i}</div><div>{_clean(c)[:250]}...</div></div>"
+            for i, c in enumerate(hits[:6], start=1)
+        )
+        return f"Here's what the document says about rights:<br>{lines}"
+
+    # -------- Responsibilities / obligations --------
+    if any(w in q_lower for w in ["responsib", "obligation", "duty", "duties"]):
+        hits = [c for c in clauses if _keyword_score(c, RESPONSIBILITY_KEYWORDS) > 0]
+        if not hits:
+            return "I couldn't find explicit obligation language (e.g. 'shall', 'must', 'responsible for') in the extracted clauses."
+        lines = "".join(
+            f"<div class='rec-point'><div class='rec-dot'>{i}</div><div>{_clean(c)[:250]}...</div></div>"
+            for i, c in enumerate(hits[:6], start=1)
+        )
+        return f"Here are the responsibilities/obligations found in the document:<br>{lines}"
+
+    # -------- Termination --------
+    if any(w in q_lower for w in ["terminat", "cancel", "end the contract", "end the agreement", "vacate"]):
+        hits = [c for c in clauses if _keyword_score(c, TERMINATION_KEYWORDS) > 0]
+        if not hits:
+            return "I couldn't find explicit termination-related clauses in this document."
+        lines = "".join(
+            f"<div class='rec-point'><div class='rec-dot'>{i}</div><div>{_clean(c)[:250]}...</div></div>"
+            for i, c in enumerate(hits[:6], start=1)
+        )
+        return f"Here's what the document says about termination:<br>{lines}"
+
+    # -------- Summarize / explain the whole agreement --------
+    if any(w in q_lower for w in ["summar", "explain this agreement", "overview", "what is this"]):
+        if not clauses:
+            preview = _clean(document_text)[:600]
+            return f"Document summary (first portion):<br>{preview}..."
+        top = clauses[:5]
+        lines = "".join(
+            f"<div class='rec-point'><div class='rec-dot'>{i}</div><div>{_clean(c)[:220]}...</div></div>"
+            for i, c in enumerate(top, start=1)
+        )
+        return f"This document contains {len(clauses)} clause(s). Here's a summary of the key ones:<br>{lines}"
+
+    # -------- Generic fallback: keyword search across clauses/text --------
+    q_words = [w for w in re.findall(r'\w+', q_lower) if len(w) > 3]
+    if clauses and q_words:
+        scored = []
+        for i, c in enumerate(clauses, start=1):
+            c_lower = c.lower()
+            score = sum(c_lower.count(w) for w in q_words)
+            if score > 0:
+                scored.append((score, i, c))
+        scored.sort(reverse=True, key=lambda x: x[0])
+        if scored:
+            lines = "".join(
+                f"<div class='rec-point'><div class='rec-dot'>{rank}</div>"
+                f"<div><strong>Clause {i}</strong>: {_clean(c)[:250]}...</div></div>"
+                for rank, (score, i, c) in enumerate(scored[:5], start=1)
+            )
+            return f"Here's what I found related to your question:<br>{lines}"
+
+    # -------- Absolute last resort: search raw text --------
+    if q_words:
+        text_lower = document_text.lower()
+        for w in q_words:
+            pos = text_lower.find(w)
+            if pos != -1:
+                start = max(0, pos - 150)
+                end = min(len(document_text), pos + 250)
+                snippet = _clean(document_text[start:end])
+                return f"Closest relevant excerpt I found:<br>...{snippet}..."
+
+    return (
+        "I couldn't find anything in this document directly answering that. "
+        "Try rephrasing, or ask about specific terms like rights, responsibilities, "
+        "termination, risky clauses, or a specific clause number."
+    )
+
+
+def ask_legal_question_safe(question: str, filename: str, language: str, document_type: str) -> str:
+    """Try the real RAG pipeline first (if available and it returns something
+    useful); otherwise fall back to the local, session-state-based answer engine
+    so the page never dead-ends on 'No relevant information found.'"""
+    document_text = st.session_state.get("document_text", "")
+    clauses = st.session_state.get("clauses", [])
+
+    if RAG_AVAILABLE:
+        try:
+            rag_answer = rag_ask_legal_question(
+                question,
+                filename=filename,
+                language=language,
+                document_type=document_type
+            )
+            if rag_answer and "no relevant information" not in rag_answer.lower():
+                return rag_answer
+        except Exception:
+            pass  # fall through to local engine
+
+    return local_answer_legal_question(question, document_text, clauses)
+
+
+# ----------------------------------------------------
 # Page Title
 # ----------------------------------------------------
 st.markdown("""
@@ -286,7 +467,7 @@ if st.button("🔍 Get Answer"):
 
     else:
         with st.spinner("Searching legal document…"):
-            answer = ask_legal_question(
+            answer = ask_legal_question_safe(
                 question,
                 filename=st.session_state.uploaded_file,
                 language=st.session_state.language,
@@ -337,6 +518,6 @@ with col1:
     if st.button("⬅ Back to Analysis", use_container_width=True):
         st.switch_page("pages/analysis.py")
 
-with col2:                        
+with col2:
     if st.button("Next ➜ Rights", use_container_width=True):
         st.switch_page("pages/rights.py")
