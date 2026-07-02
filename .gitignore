@@ -3,6 +3,6 @@ __pycache__/
 *.pyc
 .env
 .chroma/
-vector_store/chromadb/
+vector_store/
 data/uploaded/
 .streamlit/secrets.toml
