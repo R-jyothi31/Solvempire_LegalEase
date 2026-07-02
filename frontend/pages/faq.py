@@ -337,6 +337,6 @@ with col1:
     if st.button("⬅ Back to Analysis", use_container_width=True):
         st.switch_page("pages/analysis.py")
 
-with col2:
+with col2:                        
     if st.button("Next ➜ Rights", use_container_width=True):
         st.switch_page("pages/rights.py")
