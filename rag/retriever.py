@@ -1,57 +1,30 @@
 import os
-
 from langchain_chroma import Chroma
-from langchain_huggingface import HuggingFaceEmbeddings
+from rag.embedding import VECTOR_DB_PATH, get_embedding_model
+
+_vectordb = None
 
 
-# -------------------------------------
-# Vector Database Path
-# -------------------------------------
-
-BASE_DIR = os.path.dirname(
-    os.path.dirname(
-        os.path.abspath(__file__)
-    )
-)
-
-VECTOR_DB_PATH = os.path.join(
-    BASE_DIR,
-    "vector_store",
-    "chromadb"
-)
+def _get_vectordb():
+    global _vectordb
+    if _vectordb is None:
+        _vectordb = Chroma(
+            persist_directory=VECTOR_DB_PATH,
+            embedding_function=get_embedding_model()
+        )
+    return _vectordb
 
 
-# -------------------------------------
-# Multilingual Embedding Model
-# -------------------------------------
-
-embedding_model = HuggingFaceEmbeddings(
-
-    model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
-
-)
-
-
-# -------------------------------------
-# Load ChromaDB
-# -------------------------------------
-
-vectordb = Chroma(
-
-    persist_directory=VECTOR_DB_PATH,
-
-    embedding_function=embedding_model
-
-)
-
-
-# -------------------------------------
-# Basic Retrieval
-# -------------------------------------
+def reset_vectordb_cache():
+    """Call this after embedding a new document in the same process if
+    retrieval seems to be returning stale/missing results — forces the
+    next retrieval call to re-open the persisted store from disk."""
+    global _vectordb
+    _vectordb = None
 
 def retrieve(query, k=5):
 
-    docs = vectordb.similarity_search(
+    docs = _get_vectordb().similarity_search(
 
         query=query,
 
@@ -60,11 +33,6 @@ def retrieve(query, k=5):
     )
 
     return docs
-
-
-# -------------------------------------
-# Retrieval with Metadata Filter
-# -------------------------------------
 
 def retrieve_with_filter(
 
@@ -76,7 +44,7 @@ def retrieve_with_filter(
 
 ):
 
-    docs = vectordb.similarity_search(
+    docs = _get_vectordb().similarity_search(
 
         query=query,
 
@@ -85,7 +53,6 @@ def retrieve_with_filter(
         filter=filter_dict
 
     )
-
     return docs
 
 
@@ -116,12 +83,6 @@ def retrieve_by_document_type(
         k
 
     )
-
-
-# -------------------------------------
-# Retrieve by Language
-# -------------------------------------
-
 def retrieve_by_language(
 
         query,
@@ -145,11 +106,6 @@ def retrieve_by_language(
         k
 
     )
-
-
-# -------------------------------------
-# Retrieve by Uploaded File
-# -------------------------------------
 
 def retrieve_by_file(
 
@@ -188,7 +144,7 @@ def retrieve_clause(
 
 ):
 
-    docs = vectordb.get(
+    docs = _get_vectordb().get(
 
         where={
 
@@ -215,7 +171,7 @@ def retrieve_scores(
 
 ):
 
-    docs = vectordb.similarity_search_with_score(
+    docs = _get_vectordb().similarity_search_with_score(
 
         query,
 
@@ -261,10 +217,6 @@ def retrieve_text(
     ]
 
 
-# -------------------------------------
-# Display Results
-# -------------------------------------
-
 def display_results(results):
 
     for i, doc in enumerate(results):
@@ -282,11 +234,6 @@ def display_results(results):
         print(doc.metadata)
 
         print("=" * 70)
-
-
-# -------------------------------------
-# Testing
-# -------------------------------------
 
 if __name__ == "__main__":
 
