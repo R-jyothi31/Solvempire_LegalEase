@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import streamlit as st
 
@@ -122,6 +123,33 @@ st.markdown("""
     font-weight: 600;
     padding: 3px 14px;
 }
+.badge-risk-high {
+    background: #FDEDED;
+    color: #C0392B;
+    border: 1px solid #E74C3C;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 12px;
+}
+.badge-risk-medium {
+    background: #FFF8E1;
+    color: #B7791F;
+    border: 1px solid #F1C40F;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 12px;
+}
+.badge-risk-low {
+    background: #E8F8F0;
+    color: #1E8449;
+    border: 1px solid #2ECC71;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 12px;
+}
 
 /* ── Summary panel ── */
 .summary-panel {
@@ -228,22 +256,11 @@ st.markdown("""
     font-weight: 700;
     margin-top: 2px;
 }
+.rec-dot.risk-high { background: #E74C3C; }
+.rec-dot.risk-medium { background: #F1C40F; color: #4A3300; }
+.rec-dot.risk-low { background: #2ECC71; }
 
 /* ── Buttons (sky blue / blue) ── */
-.stButton > button {
-    background: #1E88E5 !important;
-    color: #FFFFFF !important;
-    border: 1.5px solid #1E88E5 !important;
-    border-radius: 10px !important;
-    font-weight: 500 !important;
-}
-.stButton > button:hover {
-    background: #0B3D91 !important;
-    border-color: #0B3D91 !important;
-    color: #E3F2FD !important;
-}
-            
-            /* ── Buttons (sky blue / blue) ── */
 .stButton > button {
     background: #1E88E5 !important;
     color: #FFFFFF !important;
@@ -322,6 +339,106 @@ clauses       = st.session_state.get("clauses",       [])
 word_count = len(document_text.split())
 char_count = len(document_text)
 line_count = len(document_text.splitlines())
+
+# --------------------------------------------------
+# Document Analysis Engine (rule-based)
+# --------------------------------------------------
+RISK_KEYWORDS = {
+    "high": [
+        "penalty", "penalties", "terminate", "termination", "forfeit",
+        "indemnify", "indemnification", "liquidated damages", "breach",
+        "non-refundable", "waive", "waiver", "sole discretion",
+        "irrevocable", "without notice", "automatically renew"
+    ],
+    "medium": [
+        "late fee", "interest", "notice period", "governing law",
+        "jurisdiction", "confidential", "non-compete", "exclusive",
+        "arbitration", "dispute"
+    ],
+    "low": [
+        "effective date", "definitions", "signature", "counterpart",
+        "entire agreement", "severability"
+    ],
+}
+
+OBLIGATION_PATTERNS = [
+    r"\bshall\b", r"\bmust\b", r"\bis required to\b",
+    r"\bagrees to\b", r"\bwill be responsible for\b"
+]
+
+RIGHT_PATTERNS = [
+    r"\bis entitled to\b", r"\bmay\b", r"\bhas the right to\b",
+    r"\breserves the right\b"
+]
+
+MONEY_PATTERN = r"(?:₹|Rs\.?|INR|\$|USD)\s?[\d,]+(?:\.\d+)?"
+DATE_PATTERN = r"\b(?:\d{1,2}[-/th|st|nd|rd\s]*(?:January|February|March|April|May|June|July|August|September|October|November|December|\d{1,2})[,\s]*\d{2,4}|\d{1,2}/\d{1,2}/\d{2,4})\b"
+
+
+def classify_clause_risk(clause_text: str) -> str:
+    text_lower = clause_text.lower()
+    for level in ("high", "medium", "low"):
+        for kw in RISK_KEYWORDS[level]:
+            if kw in text_lower:
+                return level
+    return "low"
+
+
+def analyze_document(text: str, clause_list: list) -> dict:
+    text_lower = text.lower()
+
+    # Risk distribution across clauses
+    risk_counts = {"high": 0, "medium": 0, "low": 0}
+    high_risk_clauses = []
+    for idx, c in enumerate(clause_list, start=1):
+        level = classify_clause_risk(c)
+        risk_counts[level] += 1
+        if level == "high":
+            high_risk_clauses.append((idx, c))
+
+    # Obligations & rights detection
+    obligation_hits = sum(len(re.findall(p, text_lower)) for p in OBLIGATION_PATTERNS)
+    rights_hits = sum(len(re.findall(p, text_lower)) for p in RIGHT_PATTERNS)
+
+    # Money & date mentions
+    money_matches = re.findall(MONEY_PATTERN, text)
+    date_matches = re.findall(DATE_PATTERN, text)
+
+    # Key legal terms found
+    all_keywords = RISK_KEYWORDS["high"] + RISK_KEYWORDS["medium"] + RISK_KEYWORDS["low"]
+    found_terms = sorted({kw for kw in all_keywords if kw in text_lower})
+
+    # Readability heuristic (avg words per sentence)
+    sentences = re.split(r'[.!?]+', text)
+    sentences = [s for s in sentences if s.strip()]
+    avg_sentence_len = (
+        sum(len(s.split()) for s in sentences) / len(sentences)
+        if sentences else 0
+    )
+    if avg_sentence_len == 0:
+        complexity = "Unknown"
+    elif avg_sentence_len < 15:
+        complexity = "Easy to read"
+    elif avg_sentence_len < 25:
+        complexity = "Moderately complex"
+    else:
+        complexity = "Highly complex / dense legal language"
+
+    return {
+        "risk_counts": risk_counts,
+        "high_risk_clauses": high_risk_clauses,
+        "obligation_hits": obligation_hits,
+        "rights_hits": rights_hits,
+        "money_matches": money_matches[:10],
+        "date_matches": date_matches[:10],
+        "found_terms": found_terms,
+        "avg_sentence_len": round(avg_sentence_len, 1),
+        "complexity": complexity,
+        "sentence_count": len(sentences),
+    }
+
+
+analysis = analyze_document(document_text, clauses)
 
 # --------------------------------------------------
 # Page Title
@@ -415,6 +532,75 @@ with col_right:
 st.markdown("---")
 
 # --------------------------------------------------
+# Point-by-Point Analysis Findings (NEW)
+# --------------------------------------------------
+st.markdown('<div class="section-strip">🧠 Key Findings — Point by Point</div>', unsafe_allow_html=True)
+
+findings = []
+
+findings.append(
+    f"Document contains <strong>{len(clauses)}</strong> identified clause(s) "
+    f"across <strong>{analysis['sentence_count']}</strong> sentences."
+)
+
+findings.append(
+    f"Readability: <strong>{analysis['complexity']}</strong> "
+    f"(average of {analysis['avg_sentence_len']} words per sentence)."
+)
+
+findings.append(
+    f"Risk distribution across clauses — "
+    f"<span class='badge-risk-high'>High: {analysis['risk_counts']['high']}</span>&nbsp;"
+    f"<span class='badge-risk-medium'>Medium: {analysis['risk_counts']['medium']}</span>&nbsp;"
+    f"<span class='badge-risk-low'>Low: {analysis['risk_counts']['low']}</span>"
+)
+
+if analysis["found_terms"]:
+    terms_str = ", ".join(analysis["found_terms"][:12])
+    findings.append(f"Key legal terms detected: <strong>{terms_str}</strong>.")
+else:
+    findings.append("No notable high-risk legal terms were detected in this document.")
+
+findings.append(
+    f"Obligation language (e.g. 'shall', 'must', 'agrees to') found "
+    f"<strong>{analysis['obligation_hits']}</strong> time(s) — indicates binding duties."
+)
+
+findings.append(
+    f"Rights/permission language (e.g. 'may', 'is entitled to') found "
+    f"<strong>{analysis['rights_hits']}</strong> time(s)."
+)
+
+if analysis["money_matches"]:
+    money_str = ", ".join(analysis["money_matches"])
+    findings.append(f"Monetary amounts mentioned: <strong>{money_str}</strong>.")
+else:
+    findings.append("No explicit monetary amounts were detected in the document.")
+
+if analysis["date_matches"]:
+    date_str = ", ".join(analysis["date_matches"])
+    findings.append(f"Key dates mentioned: <strong>{date_str}</strong>.")
+else:
+    findings.append("No explicit dates were detected in the document.")
+
+if analysis["high_risk_clauses"]:
+    ids_str = ", ".join(f"#{i}" for i, _ in analysis["high_risk_clauses"])
+    findings.append(
+        f"<strong>{len(analysis['high_risk_clauses'])}</strong> clause(s) flagged as "
+        f"high risk and should be reviewed carefully: {ids_str}."
+    )
+else:
+    findings.append("No clauses were flagged as high risk based on current keyword analysis.")
+
+points_html = "".join(
+    f'<div class="rec-point"><div class="rec-dot">{i}</div><div>{point}</div></div>'
+    for i, point in enumerate(findings, start=1)
+)
+st.markdown(f'<div class="rec-section">{points_html}</div>', unsafe_allow_html=True)
+
+st.markdown("---")
+
+# --------------------------------------------------
 # Text Preview
 # --------------------------------------------------
 st.markdown('<div class="section-strip">📜 Extracted Text Preview</div>', unsafe_allow_html=True)
@@ -432,7 +618,7 @@ with st.expander("📖 View Full Document Text"):
 st.markdown("---")
 
 # --------------------------------------------------
-# Extracted Clauses
+# Extracted Clauses (with risk badges)
 # --------------------------------------------------
 st.markdown('<div class="section-strip">📑 Extracted Clauses</div>', unsafe_allow_html=True)
 
@@ -458,10 +644,16 @@ else:
     )
 
     for i, clause in filtered:
+        risk_level = classify_clause_risk(clause)
+        badge_class = f"badge-risk-{risk_level}"
         preview_label = clause[:80].replace("\n", " ") + "…"
         with st.expander(f"Clause {i}  —  {preview_label}"):
             st.markdown(
-                f'<div class="clause-body">{clause}</div>',
+                f'<span class="{badge_class}">{risk_level.upper()} RISK</span>',
+                unsafe_allow_html=True
+            )
+            st.markdown(
+                f'<div class="clause-body" style="margin-top:0.6rem">{clause}</div>',
                 unsafe_allow_html=True
             )
             btn1, btn2 = st.columns(2)
