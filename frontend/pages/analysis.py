@@ -438,6 +438,154 @@ def analyze_document(text: str, clause_list: list) -> dict:
     }
 
 
+def _sentence_split(text: str) -> list:
+    """Split a block of text into sentence-level chunks, avoiding false
+    splits on common abbreviations (Mr., Mrs., Dr., No., Rs., etc.)."""
+    ABBREVIATIONS = (
+        "Mr", "Mrs", "Ms", "Dr", "Prof", "Sr", "Jr", "St",
+        "No", "Rs", "Vs", "vs", "etc", "Ltd", "Co", "Inc",
+        "PIN", "PAN", "i.e", "e.g"
+    )
+    # Temporarily protect "Abbrev." so it isn't treated as a sentence end
+    protected = text
+    placeholder_map = {}
+    for idx, abbr in enumerate(ABBREVIATIONS):
+        pattern = rf'\b{re.escape(abbr)}\.'
+        placeholder = f'§ABBR{idx}§'
+        if re.search(pattern, protected):
+            placeholder_map[placeholder] = abbr + '.'
+            protected = re.sub(pattern, placeholder, protected)
+
+    sentences = re.split(r'(?<=[.;])\s+(?=[A-Z(])', protected)
+    sentences = [s.strip() for s in sentences if s.strip()]
+
+    # Restore protected abbreviations
+    restored = []
+    for s in sentences:
+        for placeholder, original in placeholder_map.items():
+            s = s.replace(placeholder, original)
+        restored.append(s)
+    return restored
+
+
+def split_clause_into_points(clause_text: str) -> list:
+    """Break a clause's raw text into individual point-by-point items.
+
+    Handles real-world extracted text where numbered sub-items like
+    "1.1", "2.3", "(a)", "(i)" appear INLINE in a dense paragraph
+    (no line breaks), which is common when text is pulled from a PDF.
+
+    Priority:
+    1. Split on numbered/lettered sub-item markers wherever they occur
+       (inline or on their own line), e.g. "1.1 The Licensee shall...".
+    2. Any resulting point that is still very long (dense legal paragraph
+       with no numbering) gets further broken down by sentence.
+    3. Falls back to sentence-splitting the whole clause if no numbering
+       markers are found at all.
+    4. Falls back to the whole clause as a single point if nothing else works.
+    """
+    text = clause_text.strip()
+    if not text:
+        return []
+
+    # 1. Find numbering markers anywhere they appear, as long as they're
+    #    preceded by whitespace and followed by a capitalised word — this
+    #    catches inline markers like "...consent. 1.2 The Licensee shall..."
+    marker_pattern = (
+        r'(?<=\s)(?:\d{1,2}\.\d{1,2}(?:\.\d{1,2})?|\d{1,2}\.|\([a-z]\)|\([ivxlcdm]+\))'
+        r'\s+(?=[A-Z])'
+    )
+    matches = list(re.finditer(marker_pattern, text, flags=re.IGNORECASE))
+
+    if matches:
+        raw_points = []
+        start = 0
+        for m in matches:
+            segment = text[start:m.start()].strip()
+            if segment:
+                raw_points.append(segment)
+            start = m.start()
+        tail = text[start:].strip()
+        if tail:
+            raw_points.append(tail)
+    else:
+        raw_points = [text]
+
+    # 2. Further break down any point that's still a dense wall of text
+    #    (no numbering caught it) into individual sentences.
+    LONG_THRESHOLD = 350  # characters
+    final_points = []
+    for point in raw_points:
+        if len(point) > LONG_THRESHOLD:
+            final_points.extend(_sentence_split(point))
+        else:
+            final_points.append(point)
+
+    if final_points:
+        return final_points
+
+    # 3. Fallback: sentence split whole clause
+    sentences = _sentence_split(text)
+    if len(sentences) > 1:
+        return sentences
+
+    # 4. Fallback: whole clause as one point
+    return [text]
+
+
+def analyze_clause(clause_text: str) -> list:
+    """Return a list of point-by-point findings for a single clause."""
+    text_lower = clause_text.lower()
+    points = []
+
+    # Risk level
+    risk_level = classify_clause_risk(clause_text)
+    points.append((f"Risk level: <strong>{risk_level.upper()}</strong>", risk_level))
+
+    # Matched risk keywords in this clause
+    matched_terms = [
+        kw for level in ("high", "medium", "low")
+        for kw in RISK_KEYWORDS[level]
+        if kw in text_lower
+    ]
+    if matched_terms:
+        points.append((
+            f"Key term(s) detected: <strong>{', '.join(sorted(set(matched_terms)))}</strong>",
+            "info"
+        ))
+
+    # Obligation language
+    obligation_found = any(re.search(p, text_lower) for p in OBLIGATION_PATTERNS)
+    if obligation_found:
+        points.append(("Contains binding obligation language (e.g. 'shall', 'must', 'agrees to').", "info"))
+
+    # Rights language
+    rights_found = any(re.search(p, text_lower) for p in RIGHT_PATTERNS)
+    if rights_found:
+        points.append(("Contains rights/permission language (e.g. 'may', 'is entitled to').", "info"))
+
+    # Money mentioned
+    money_in_clause = re.findall(MONEY_PATTERN, clause_text)
+    if money_in_clause:
+        points.append((f"Monetary amount(s) mentioned: <strong>{', '.join(money_in_clause)}</strong>", "info"))
+
+    # Dates mentioned
+    dates_in_clause = re.findall(DATE_PATTERN, clause_text)
+    if dates_in_clause:
+        points.append((f"Date(s) mentioned: <strong>{', '.join(dates_in_clause)}</strong>", "info"))
+
+    # Length note
+    word_ct = len(clause_text.split())
+    if word_ct > 120:
+        points.append((f"This is a long clause ({word_ct} words) — worth a careful read.", "info"))
+
+    # If nothing notable was found beyond risk level
+    if len(points) == 1:
+        points.append(("No specific risk keywords, obligations, or amounts detected in this clause.", "low"))
+
+    return points
+
+
 analysis = analyze_document(document_text, clauses)
 
 # --------------------------------------------------
@@ -652,10 +800,23 @@ else:
                 f'<span class="{badge_class}">{risk_level.upper()} RISK</span>',
                 unsafe_allow_html=True
             )
+
+            # ── Clause content, broken into points ──
+            clause_pts = split_clause_into_points(clause)
+            clause_pts_html = "".join(
+                f'<div class="rec-point">'
+                f'<div class="rec-dot">{p_idx}</div>'
+                f'<div>{pt}</div>'
+                f'</div>'
+                for p_idx, pt in enumerate(clause_pts, start=1)
+            )
             st.markdown(
-                f'<div class="clause-body" style="margin-top:0.6rem">{clause}</div>',
+                f'<div class="clause-body" style="margin-top:0.6rem">{clause_pts_html}</div>',
                 unsafe_allow_html=True
             )
+
+            # ── Point-by-point analysis for this clause ──
+
             btn1, btn2 = st.columns(2)
             with btn1:
                 if st.button("⚖️ View Rights", key=f"r_{i}"):
