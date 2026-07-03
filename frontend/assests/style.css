@@ -1,0 +1,717 @@
+/* ============================================================
+   LegalEase — Global Theme
+   Place at: frontend/assets/style.css
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap');
+
+/* ── Design Tokens ─────────────────────────────────────────── */
+:root {
+    --navy:        #0D1B2A;
+    --navy-mid:    #1B2E42;
+    --navy-soft:   #243447;
+    --gold:        #C9A84C;
+    --gold-light:  #E4C97E;
+    --gold-pale:   #F5EDD6;
+    --cream:       #FAF8F4;
+    --white:       #FFFFFF;
+    --text-primary:   #0D1B2A;
+    --text-secondary: #4A5568;
+    --text-muted:     #718096;
+    --success:     #1A6B4A;
+    --success-bg:  #EAF5EF;
+    --warning:     #92600A;
+    --warning-bg:  #FEF3DC;
+    --danger:      #9B2335;
+    --danger-bg:   #FCEDEF;
+    --border:      #E2DAC8;
+    --border-strong: #C9A84C;
+    --radius-sm:   6px;
+    --radius-md:   10px;
+    --radius-lg:   16px;
+    --shadow-card: 0 2px 12px rgba(13,27,42,0.08);
+    --shadow-hover: 0 6px 24px rgba(13,27,42,0.14);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body:    'Inter', system-ui, sans-serif;
+}
+
+/* ── Base ──────────────────────────────────────────────────── */
+html, body, [class*="css"] {
+    font-family: var(--font-body) !important;
+    color: var(--text-primary);
+}
+
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"] {
+    background-color: var(--cream) !important;
+}
+
+.main .block-container,
+[data-testid="stMainBlockContainer"] {
+    padding: 2rem 2.5rem 3rem !important;
+    max-width: 1100px !important;
+    background-color: var(--cream) !important;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────── */
+[data-testid="stSidebar"],
+[data-testid="stSidebarContent"] {
+    background: var(--navy) !important;
+    border-right: 1px solid var(--navy-soft) !important;
+}
+
+[data-testid="stSidebar"] * { color: #D6C9B0 !important; }
+[data-testid="stSidebar"] a:hover { color: var(--gold-light) !important; }
+[data-testid="stSidebar"] hr { border-color: var(--navy-soft) !important; }
+
+[data-testid="stSidebarNavLink"][aria-current="page"] {
+    background: var(--navy-soft) !important;
+    border-left: 3px solid var(--gold) !important;
+    color: var(--gold-light) !important;
+}
+
+/* ── Typography ─────────────────────────────────────────────── */
+h1, [data-testid="stHeading"] h1 {
+    font-family: var(--font-display) !important;
+    font-size: 2.2rem !important;
+    font-weight: 600 !important;
+    color: var(--navy) !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.25rem !important;
+}
+
+h1::after {
+    content: '';
+    display: block;
+    width: 52px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 2px;
+    margin-top: 8px;
+}
+
+h2 {
+    font-family: var(--font-display) !important;
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    color: var(--navy) !important;
+    margin-top: 1.5rem !important;
+}
+
+h3 {
+    font-family: var(--font-body) !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: var(--navy-mid) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+}
+
+p, li,
+[data-testid="stMarkdownContainer"] p {
+    color: var(--text-secondary) !important;
+    font-size: 0.96rem !important;
+    line-height: 1.75 !important;
+}
+
+[data-testid="stSubheader"] {
+    color: var(--gold) !important;
+    font-family: var(--font-body) !important;
+    font-weight: 500 !important;
+    font-size: 1rem !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+}
+
+hr, [data-testid="stDivider"] hr {
+    border: none !important;
+    border-top: 1px solid var(--border) !important;
+    margin: 1.5rem 0 !important;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.stButton > button,
+[data-testid="stBaseButton-secondary"],
+[data-testid="stBaseButton-primary"] {
+    background: var(--navy) !important;
+    color: var(--gold-light) !important;
+    border: 1.5px solid var(--navy) !important;
+    border-radius: var(--radius-md) !important;
+    font-family: var(--font-body) !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 0.02em !important;
+    padding: 0.55rem 1.4rem !important;
+    transition: background 0.18s, border-color 0.18s, color 0.18s !important;
+}
+
+.stButton > button:hover,
+[data-testid="stBaseButton-secondary"]:hover,
+[data-testid="stBaseButton-primary"]:hover {
+    background: var(--navy-soft) !important;
+    border-color: var(--gold) !important;
+    color: var(--gold) !important;
+}
+
+.stButton > button:active { transform: scale(0.98) !important; }
+
+/* ── File Uploader ───────────────────────────────────────────── */
+[data-testid="stFileUploader"] {
+    background: var(--white) !important;
+    border: 2px dashed var(--border) !important;
+    border-radius: var(--radius-lg) !important;
+    padding: 1.5rem !important;
+    transition: border-color 0.2s !important;
+}
+[data-testid="stFileUploader"]:hover { border-color: var(--gold) !important; }
+[data-testid="stFileUploader"] label { color: var(--text-secondary) !important; }
+
+/* ── Text Input / Textarea ───────────────────────────────────── */
+[data-testid="stTextInput"] input,
+.stTextInput input,
+[data-testid="stTextArea"] textarea,
+.stTextArea textarea {
+    background: var(--white) !important;
+    border: 1.5px solid var(--border) !important;
+    border-radius: var(--radius-md) !important;
+    color: var(--text-primary) !important;
+    font-family: var(--font-body) !important;
+    font-size: 0.95rem !important;
+    padding: 0.6rem 0.9rem !important;
+    transition: border-color 0.18s !important;
+}
+
+[data-testid="stTextInput"] input:focus,
+.stTextInput input:focus,
+[data-testid="stTextArea"] textarea:focus,
+.stTextArea textarea:focus {
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.15) !important;
+    outline: none !important;
+}
+
+/* ── Expanders ───────────────────────────────────────────────── */
+[data-testid="stExpander"],
+details[data-testid="stExpander"] {
+    background: var(--white) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-card) !important;
+    margin-bottom: 0.6rem !important;
+    overflow: hidden !important;
+}
+
+[data-testid="stExpander"] summary,
+details[data-testid="stExpander"] summary {
+    background: var(--white) !important;
+    color: var(--navy) !important;
+    font-weight: 500 !important;
+    font-size: 0.95rem !important;
+    padding: 0.85rem 1.2rem !important;
+    font-family: var(--font-body) !important;
+    list-style: none;
+    cursor: pointer;
+}
+
+[data-testid="stExpander"] summary:hover,
+details[data-testid="stExpander"] summary:hover {
+    background: var(--gold-pale) !important;
+    color: var(--navy) !important;
+}
+
+[data-testid="stExpander"] summary p {
+    color: var(--navy) !important;
+    margin: 0 !important;
+}
+
+[data-testid="stExpander"] summary svg { color: var(--gold) !important; }
+
+[data-testid="stExpander"] > div:last-child,
+details[data-testid="stExpander"] > div {
+    background: var(--cream) !important;
+    border-top: 1px solid var(--border) !important;
+    padding: 1rem 1.2rem !important;
+}
+
+/* ── Alerts ──────────────────────────────────────────────────── */
+[data-testid="stAlert"] {
+    border-radius: var(--radius-md) !important;
+    border-left-width: 4px !important;
+    font-size: 0.93rem !important;
+    font-family: var(--font-body) !important;
+}
+
+div[data-testid="stSuccess"],
+div.stSuccess > div {
+    background: var(--success-bg) !important;
+    border-color: var(--success) !important;
+    color: var(--success) !important;
+    border-radius: var(--radius-md) !important;
+}
+
+div[data-testid="stWarning"],
+div.stWarning > div {
+    background: var(--warning-bg) !important;
+    border-color: var(--warning) !important;
+    color: var(--warning) !important;
+    border-radius: var(--radius-md) !important;
+}
+
+div[data-testid="stError"],
+div.stError > div {
+    background: var(--danger-bg) !important;
+    border-color: var(--danger) !important;
+    color: var(--danger) !important;
+    border-radius: var(--radius-md) !important;
+}
+
+div[data-testid="stInfo"],
+div.stInfo > div {
+    background: var(--gold-pale) !important;
+    border-color: var(--gold) !important;
+    color: var(--navy-mid) !important;
+    border-radius: var(--radius-md) !important;
+}
+
+/* ── Spinner ─────────────────────────────────────────────────── */
+[data-testid="stSpinner"] { color: var(--gold) !important; }
+
+/* ── Metrics ─────────────────────────────────────────────────── */
+[data-testid="stMetric"] {
+    background: var(--white) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-md) !important;
+    padding: 1.1rem 1.25rem !important;
+    box-shadow: var(--shadow-card) !important;
+}
+[data-testid="stMetricLabel"] {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    color: var(--text-muted) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+}
+[data-testid="stMetricValue"] {
+    font-family: var(--font-display) !important;
+    font-size: 1.9rem !important;
+    color: var(--navy) !important;
+    font-weight: 600 !important;
+}
+
+/* ── Tabs ────────────────────────────────────────────────────── */
+[data-testid="stTabs"] [role="tablist"] {
+    border-bottom: 2px solid var(--border) !important;
+}
+[data-testid="stTabs"] [role="tab"] {
+    font-family: var(--font-body) !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    color: var(--text-muted) !important;
+    padding: 0.6rem 1.2rem !important;
+    border-bottom: 2px solid transparent !important;
+    margin-bottom: -2px !important;
+    transition: color 0.15s, border-color 0.15s !important;
+}
+[data-testid="stTabs"] [role="tab"]:hover { color: var(--navy) !important; }
+[data-testid="stTabs"] [role="tab"][aria-selected="true"] {
+    color: var(--navy) !important;
+    border-bottom-color: var(--gold) !important;
+}
+
+/* ── Progress Bar ────────────────────────────────────────────── */
+[data-testid="stProgressBar"] > div {
+    background: var(--border) !important;
+    border-radius: 99px !important;
+    height: 6px !important;
+}
+[data-testid="stProgressBar"] > div > div {
+    background: linear-gradient(90deg, var(--navy), var(--gold)) !important;
+    border-radius: 99px !important;
+}
+
+/* ── Code Blocks ─────────────────────────────────────────────── */
+code {
+    background: var(--gold-pale) !important;
+    color: var(--navy) !important;
+    border-radius: 4px !important;
+    padding: 0.15em 0.4em !important;
+    font-size: 0.88em !important;
+}
+pre { background: var(--navy) !important; border-radius: var(--radius-md) !important; padding: 1.25rem !important; }
+pre code { background: transparent !important; color: var(--gold-light) !important; }
+
+/* ── Selectbox ───────────────────────────────────────────────── */
+[data-testid="stSelectbox"] > div > div {
+    background: var(--white) !important;
+    border: 1.5px solid var(--border) !important;
+    border-radius: var(--radius-md) !important;
+    color: var(--text-primary) !important;
+}
+[data-testid="stSelectbox"] > div > div:hover { border-color: var(--gold) !important; }
+
+/* ── Columns background fix ──────────────────────────────────── */
+[data-testid="column"],
+[data-testid="stColumn"] { background: transparent !important; }
+
+/* ============================================================
+   CUSTOM HTML CLASSES
+   Used via st.markdown(..., unsafe_allow_html=True)
+   ============================================================ */
+
+/* ── Page subtitle (analysis.py) ─────────────────────────────── */
+.page-subtitle {
+    color: var(--text-muted);
+    font-size: 0.93rem;
+    margin-top: 0.2rem;
+    font-family: var(--font-body);
+}
+
+/* ── Section strip heading ───────────────────────────────────── */
+/* Used in analysis.py: <div class="section-strip">...</div>     */
+.section-strip {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    background: linear-gradient(90deg, var(--navy) 0%, var(--navy-mid) 100%);
+    border-left: 4px solid var(--gold);
+    padding: 0.5rem 1rem;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin-bottom: 0.85rem;
+}
+
+/* ── Stat cards (analysis.py 4-column row) ───────────────────── */
+.stat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--gold);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1rem;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 0.18s, transform 0.15s;
+}
+.stat-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+}
+.stat-value {
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+.stat-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    margin-top: 0.3rem;
+    font-weight: 500;
+}
+
+/* ── Meta card (File Information panel) ──────────────────────── */
+.meta-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.4rem;
+    box-shadow: var(--shadow-card);
+}
+.meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid #F0EAD8;
+}
+.meta-row:last-child { border-bottom: none; }
+.meta-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.meta-value {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    text-align: right;
+    max-width: 58%;
+    word-break: break-all;
+}
+
+/* ── Badges ──────────────────────────────────────────────────── */
+.badge-type {
+    background: var(--gold-pale);
+    color: var(--navy);
+    border: 1px solid var(--gold);
+    border-radius: 99px;
+    padding: 0.2rem 0.8rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+.badge-lang {
+    background: var(--success-bg);
+    color: var(--success);
+    border: 1px solid #B7DFC9;
+    border-radius: 99px;
+    padding: 0.2rem 0.8rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+.badge-gold {
+    background: var(--gold-pale);
+    color: var(--navy);
+    border: 1px solid var(--gold);
+    border-radius: 99px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 3px 12px;
+    display: inline-block;
+    letter-spacing: 0.04em;
+}
+.badge-risk-high {
+    background: var(--danger-bg);  color: var(--danger);
+    border: 1px solid #F5C6CB;     border-radius: 99px;
+    font-size: 0.78rem;            font-weight: 500;
+    padding: 3px 12px;             display: inline-block;
+}
+.badge-risk-medium {
+    background: var(--warning-bg); color: var(--warning);
+    border: 1px solid #FDEAAA;    border-radius: 99px;
+    font-size: 0.78rem;            font-weight: 500;
+    padding: 3px 12px;             display: inline-block;
+}
+.badge-risk-low {
+    background: var(--success-bg); color: var(--success);
+    border: 1px solid #B7DFC9;    border-radius: 99px;
+    font-size: 0.78rem;            font-weight: 500;
+    padding: 3px 12px;             display: inline-block;
+}
+
+/* ── Summary panel (Quick Summary, analysis.py right col) ─────── */
+.summary-panel {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.4rem;
+    box-shadow: var(--shadow-card);
+}
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #F0EAD8;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+.summary-row:last-child { border-bottom: none; }
+.summary-key {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ── Text preview box (analysis.py extracted text) ───────────── */
+.text-preview-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--gold);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.3rem;
+    font-size: 0.87rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 260px;
+    overflow-y: auto;
+    box-shadow: var(--shadow-card);
+}
+.text-preview-box::-webkit-scrollbar { width: 5px; }
+.text-preview-box::-webkit-scrollbar-track { background: var(--cream); }
+.text-preview-box::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+/* ── Clause body (inside expanders) ─────────────────────────── */
+.clause-body {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1.1rem;
+    font-size: 0.87rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* ── Clause card (alternative card layout) ───────────────────── */
+.clause-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--gold);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 0.75rem;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 0.18s, border-left-color 0.18s;
+}
+.clause-card:hover { box-shadow: var(--shadow-hover); border-left-color: var(--navy); }
+
+/* ── Empty state ─────────────────────────────────────────────── */
+.empty-state {
+    background: var(--white);
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.93rem;
+}
+
+/* ── Section label (small uppercase label above content) ─────── */
+.section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+}
+
+/* ── next_steps.py — Section header strip ────────────────────── */
+/* Replaces the inline <style> block in next_steps.py            */
+.section-header-strip {
+    background: linear-gradient(90deg, var(--navy) 0%, var(--navy-mid) 100%);
+    color: var(--gold);
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 1.1rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+    margin-top: 1.5rem;
+}
+
+/* ── next_steps.py — Recommendation cards ───────────────────── */
+.rec-section {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--gold);
+    border-radius: var(--radius-md);
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 0.9rem;
+    box-shadow: var(--shadow-card);
+}
+.rec-section h4 {
+    font-family: var(--font-display);
+    color: var(--navy);
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+}
+.rec-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid #F0EAD8;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.65;
+}
+.rec-point:last-child { border-bottom: none; }
+.rec-dot {
+    min-width: 22px;
+    height: 22px;
+    background: var(--gold);
+    color: var(--navy);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* ── next_steps.py — Document meta card ─────────────────────── */
+.doc-meta-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.4rem;
+    box-shadow: var(--shadow-card);
+}
+.doc-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid #F0EAD8;
+    font-size: 0.9rem;
+}
+.doc-meta-row:last-child { border-bottom: none; }
+.doc-meta-label {
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.doc-meta-value {
+    color: var(--navy);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.badge-doctype {
+    background: var(--gold-pale);
+    color: var(--navy);
+    border: 1px solid var(--gold);
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 14px;
+}
+
+/* ── next_steps.py — Checklist ───────────────────────────────── */
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.5rem 0;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    border-bottom: 1px solid #F0EAD8;
+}
+.checklist-item:last-child { border-bottom: none; }
+.check-icon { color: var(--success); font-size: 1rem; font-weight: 700; }
+
+/* ── Scrollbar (global) ──────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .main .block-container,
+    [data-testid="stMainBlockContainer"] { padding: 1.25rem 1rem 2rem !important; }
+    h1 { font-size: 1.75rem !important; }
+    .stat-value { font-size: 1.5rem; }
+    .meta-row { flex-direction: column; align-items: flex-start; gap: 0.2rem; }
+    .meta-value { max-width: 100%; text-align: left; }
+}

@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.chroma/
+vector_store/chromadb/
+data/uploaded/
+.streamlit/secrets.toml
