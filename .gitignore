@@ -1,8 +1,10 @@
-venv/
+.env
 __pycache__/
 *.pyc
-.env
-.chroma/
-vector_store/chromadb/
-data/uploaded/
-.streamlit/secrets.toml
+venv/
+.venv/
+# adjust these to your actual vector db folder name, e.g.:
+chroma_db/
+faiss_index/
+*.index
+*.sqlite3
