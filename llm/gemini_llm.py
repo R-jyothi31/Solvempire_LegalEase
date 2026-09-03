@@ -17,7 +17,7 @@ if not NVIDIA_API_KEY:
     )
 
 llm = ChatOpenAI(
-    model="meta/llama-3.1-70b-instruct",
+    model="meta/llama-3.3-70b-instruct",
     api_key=NVIDIA_API_KEY,
     base_url="https://integrate.api.nvidia.com/v1",
     temperature=0.2,
