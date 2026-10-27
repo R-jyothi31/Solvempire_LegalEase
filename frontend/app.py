@@ -248,6 +248,28 @@ section[data-testid="stSidebar"] a[aria-current="page"],
 [data-testid="stSidebarNavItems"] a[aria-current="page"] {
     background: #BBDEFB !important;
 }
+/* ── Sidebar nav font size ── */
+section[data-testid="stSidebar"] a span,
+section[data-testid="stSidebar"] a p,
+[data-testid="stSidebarNav"] a span,
+[data-testid="stSidebarNavLink"] span,
+[data-testid="stSidebarNavItems"] a span {
+    font-size: 20px !important;
+    font-weight: 500 !important;
+}
+
+/* a little more breathing room between links */
+[data-testid="stSidebarNavLink"],
+[data-testid="stSidebarNav"] li a {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+
+/* active page slightly bolder */
+[data-testid="stSidebarNavLink"][aria-current="page"] span,
+[data-testid="stSidebarNav"] a[aria-current="page"] span {
+    font-weight: 700 !important;
+}
 
 /* ── General hover (expanders, links) ── */
 [data-testid="stExpander"] summary:hover {
